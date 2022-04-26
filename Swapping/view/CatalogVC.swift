@@ -7,24 +7,20 @@
 
 import UIKit
 
-class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, FireDataBaseDelegate {
+class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, DataServiceDelegate {
     
     @IBOutlet weak var categoryTableView: UITableView!
     
+    var categories : [Category] = []
+    
+    var parentCategory : Category?
+    
     @IBAction func addCategory(_ sender: UIBarButtonItem) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let categoryVC = storyboard.instantiateViewController(withIdentifier: "categoryViewController") as? CategoryViewController {
         
-            if FireDataBase.shared.categories.count > 0 {
-                FireDataBase.shared.parentCategory = FireDataBase.shared.categories[0].parent
+            if categories.count > 0 {
+                DataService.shared.parentCategory = DataService.shared.categories[0].parent
             }
-            categoryVC.modalPresentationStyle = .fullScreen
-            if let navigationController = self.navigationController {
-                navigationController.pushViewController(categoryVC, animated: true)
-            } else {
-                self.present(categoryVC, animated: true)
-            }
-        }
+        Coordinator.showEditingCategory(category: nil, presentingVC: self)
     }
     
     override func viewDidLoad() {
@@ -33,23 +29,28 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, F
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
         categoryTableView.register(UINib(nibName: "CategoryTableViewCell", bundle: .main), forCellReuseIdentifier: "categoryCell")
-        FireDataBase.shared.delegateCategories = self
      }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //if view.navi
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        SwappingAuth().signInSwap(in: self)
-        FireDataBase.shared.getCategories(in: nil)
+        DataService.shared.delegateCategories = self
+        DataService.shared.getCategories(in: parentCategory)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return FireDataBase.shared.categories.count
+        return categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as? CategoryTableViewCell {
-            let category = FireDataBase.shared.categories[indexPath.row]
-            cell.configure(name: category.name, img: category.img)
+            let category = categories[indexPath.row]
+            cell.configure(name: category.name, img: category.image)
             
             return cell
         } else {
@@ -58,14 +59,23 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, F
     }
     
     func refreshData() {
+        categories = DataService.shared.categories
         categoryTableView.reloadData()
     }
     
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        if indexPath.row < FireDataBase.shared.categories.count {
-            let category = FireDataBase.shared.categories[indexPath.row]
-            FireDataBase.shared.getCategories(in: category)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.row < categories.count {
+            let category = categories[indexPath.row]
+            Coordinator.showCategories(in: category, presentingVC: self)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func refreshRow(indexPath: IndexPath) {
+        categoryTableView.reloadRows(at: [indexPath], with: .fade)
     }
     
 }

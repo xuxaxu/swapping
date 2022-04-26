@@ -8,28 +8,25 @@
 import Foundation
 import Firebase
 
-class Category : NSObject {
+class Category : NSObject, ObjectWithImage {
     var name : String
     var parent : Category?
-    var img : UIImage?
+    var image : UIImage?
+    var imgUrl : URL?
     
-    init(name : String, parent : Category?) {
+    init(name : String, parent : Category?, image : UIImage?) {
         self.name = name
         self.parent = parent
+        self.image = image
     }
     
     func getRef() -> String {
         if parent == nil {
             return "categories/" + name
         } else {
-            return parent!.getRef() + name
+            return parent!.getRef() + "/" + name
         }
     }
-}
-
-class FireCategory : NSObject {
-    var name : AnyObject!
-    var img : AnyObject!
 }
 
 class Product : NSObject {

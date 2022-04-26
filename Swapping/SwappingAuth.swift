@@ -22,8 +22,13 @@ class SwappingAuth: NSObject, FUIAuthDelegate {
                 authUI.providers = [FUIEmailAuth(), FUIOAuth.appleAuthProvider()]
     
                 let authVC = authUI.authViewController()
-                vc.present(authVC, animated: true)
-
+                authVC.modalPresentationStyle = .fullScreen
+                
+                //if let nc = vc.navigationController {
+                 //   nc.pushViewController(authVC, animated: true)
+                //} else {
+                    vc.present(authVC, animated: true)
+                //}
             }
     }
     
@@ -31,7 +36,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate {
         if let _ = error {
             
         } else {
-            FireDataBase.shared.currentUser = authDataResult?.user
+            DataService.shared.currentUser = authDataResult?.user
         }
     }
     

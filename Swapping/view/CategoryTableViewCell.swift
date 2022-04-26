@@ -26,7 +26,11 @@ class CategoryTableViewCell: UITableViewCell {
     
     func configure(name : String, img : UIImage?) {
         self.nameCategoryLabel.text = name
+        
         self.imgCategory.image = img
+        
+        self.imgCategory.layer.cornerRadius = 13
+        self.imgCategory.clipsToBounds = true
     }
     
 }
