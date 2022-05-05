@@ -51,4 +51,26 @@ final class Coordinator {
         }
     }
     
+    static func showProducts(presentingVC: UIViewController) {
+        if let vcProduct = getVC(id: "ProductCollectionId") {
+            presentVC(newOne: vcProduct, oldOne: presentingVC)
+        }
+    }
+    
+    static func showEditingProduct(product : Product?, presentingVC: UIViewController) {
+        if let productVC = getVC(id: "EditingProductVCId") as? EditProductViewController {
+            productVC.product = product
+            presentVC(newOne: productVC, oldOne: presentingVC)
+        }
+    }
+    
+    static func showAlert(message: String, in vc: UIViewController) {
+            
+        let alert = UIAlertController(title: message, message: "error.", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
+       
+        vc.present(alert, animated: true)
+    }
+    
 }

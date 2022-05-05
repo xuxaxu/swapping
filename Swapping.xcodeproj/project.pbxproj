@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C91CF1A0281BB36300C5CFB8 /* CategorySectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF19E281BB36300C5CFB8 /* CategorySectionTableViewCell.swift */; };
+		C91CF1A1281BB36300C5CFB8 /* CategorySectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C91CF19F281BB36300C5CFB8 /* CategorySectionTableViewCell.xib */; };
+		C91CF1A3281EDDF900C5CFB8 /* ProductCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */; };
+		C91CF1A7281EDF2B00C5CFB8 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */; };
+		C91CF1A9281EE36100C5CFB8 /* EditProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */; };
+		C944908A2822A340007D9CBD /* imageWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94490892822A340007D9CBD /* imageWork.swift */; };
 		C953F0B7280EE04100EDF49C /* ModelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C953F0B6280EE04100EDF49C /* ModelData.swift */; };
 		C953F0B92811392300EDF49C /* FirebaseNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C953F0B82811392300EDF49C /* FirebaseNetwork.swift */; };
 		C953F0BC28115AE100EDF49C /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C953F0BA28115AE100EDF49C /* CategoryTableViewCell.swift */; };
@@ -30,6 +36,12 @@
 /* Begin PBXFileReference section */
 		0DA918DBB770E71C34DAEED5 /* Pods-Swapping.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swapping.debug.xcconfig"; path = "Target Support Files/Pods-Swapping/Pods-Swapping.debug.xcconfig"; sourceTree = "<group>"; };
 		AE64C9414726353EC3E08C96 /* Pods_Swapping.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Swapping.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C91CF19E281BB36300C5CFB8 /* CategorySectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionTableViewCell.swift; sourceTree = "<group>"; };
+		C91CF19F281BB36300C5CFB8 /* CategorySectionTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategorySectionTableViewCell.xib; sourceTree = "<group>"; };
+		C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCollectionViewCell.swift; sourceTree = "<group>"; };
+		C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
+		C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductViewController.swift; sourceTree = "<group>"; };
+		C94490892822A340007D9CBD /* imageWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageWork.swift; sourceTree = "<group>"; };
 		C953F0B6280EE04100EDF49C /* ModelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelData.swift; sourceTree = "<group>"; };
 		C953F0B82811392300EDF49C /* FirebaseNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetwork.swift; sourceTree = "<group>"; };
 		C953F0BA28115AE100EDF49C /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -81,13 +93,34 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		C953F0BE28118E5600EDF49C /* view */ = {
+		C91CF1A4281EDED400C5CFB8 /* Category */ = {
 			isa = PBXGroup;
 			children = (
-				C994BDDB280D98CD00D4AF9F /* CatalogVC.swift */,
 				C953F0BF28118E9200EDF49C /* CategoryViewController.swift */,
 				C953F0BA28115AE100EDF49C /* CategoryTableViewCell.swift */,
 				C953F0BB28115AE100EDF49C /* CategoryTableViewCell.xib */,
+				C91CF19E281BB36300C5CFB8 /* CategorySectionTableViewCell.swift */,
+				C91CF19F281BB36300C5CFB8 /* CategorySectionTableViewCell.xib */,
+				C994BDDB280D98CD00D4AF9F /* CatalogVC.swift */,
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		C91CF1A5281EDF0000C5CFB8 /* Product */ = {
+			isa = PBXGroup;
+			children = (
+				C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */,
+				C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */,
+				C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */,
+			);
+			path = Product;
+			sourceTree = "<group>";
+		};
+		C953F0BE28118E5600EDF49C /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C91CF1A5281EDF0000C5CFB8 /* Product */,
+				C91CF1A4281EDED400C5CFB8 /* Category */,
 				C994BDDD280D98CD00D4AF9F /* Main.storyboard */,
 				C953F0C32812E71000EDF49C /* StartViewController.swift */,
 			);
@@ -108,6 +141,7 @@
 		C994A01C28158F7F00DD8920 /* PhotoLib */ = {
 			isa = PBXGroup;
 			children = (
+				C94490892822A340007D9CBD /* imageWork.swift */,
 				C994A01D28167EF700DD8920 /* PhotoPicker.swift */,
 			);
 			path = PhotoLib;
@@ -209,6 +243,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C91CF1A1281BB36300C5CFB8 /* CategorySectionTableViewCell.xib in Resources */,
 				C994BDE4280D98CE00D4AF9F /* LaunchScreen.storyboard in Resources */,
 				C953F0BD28115AE100EDF49C /* CategoryTableViewCell.xib in Resources */,
 				C994BDEC280D9AD800D4AF9F /* GoogleService-Info.plist in Resources */,
@@ -283,12 +318,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C91CF1A9281EE36100C5CFB8 /* EditProductViewController.swift in Sources */,
 				C953F0C22812AEBC00EDF49C /* DataService.swift in Sources */,
 				C973A125280DBCF6008BCDF2 /* SwappingAuth.swift in Sources */,
+				C91CF1A3281EDDF900C5CFB8 /* ProductCollectionViewCell.swift in Sources */,
+				C944908A2822A340007D9CBD /* imageWork.swift in Sources */,
+				C91CF1A7281EDF2B00C5CFB8 /* ProductViewController.swift in Sources */,
 				C953F0B92811392300EDF49C /* FirebaseNetwork.swift in Sources */,
 				C994BDDC280D98CD00D4AF9F /* CatalogVC.swift in Sources */,
 				C953F0B7280EE04100EDF49C /* ModelData.swift in Sources */,
 				C953F0C42812E71000EDF49C /* StartViewController.swift in Sources */,
+				C91CF1A0281BB36300C5CFB8 /* CategorySectionTableViewCell.swift in Sources */,
 				C953F0C62812E87200EDF49C /* Coordinator.swift in Sources */,
 				C994A01E28167EF700DD8920 /* PhotoPicker.swift in Sources */,
 				C953F0C028118E9200EDF49C /* CategoryViewController.swift in Sources */,

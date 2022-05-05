@@ -17,7 +17,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate {
      
     func signInSwap(in vc : UIViewController) {
             if let authUI = FUIAuth.defaultAuthUI() {
-                authUI.delegate = self
+                authUI.delegate = DataService.shared
             
                 authUI.providers = [FUIEmailAuth(), FUIOAuth.appleAuthProvider()]
     
@@ -30,14 +30,6 @@ class SwappingAuth: NSObject, FUIAuthDelegate {
                     vc.present(authVC, animated: true)
                 //}
             }
-    }
-    
-    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
-        if let _ = error {
-            
-        } else {
-            DataService.shared.currentUser = authDataResult?.user
-        }
     }
     
 }

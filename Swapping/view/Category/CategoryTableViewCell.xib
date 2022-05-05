@@ -18,13 +18,13 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cwh-rI-tRt">
-                        <rect key="frame" x="67" y="5" width="292" height="54"/>
+                        <rect key="frame" x="87" y="5" width="272" height="54"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle3"/>
                         <color key="textColor" systemColor="systemGrayColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nZy-JT-iDR">
-                        <rect key="frame" x="5" y="5" width="54" height="54"/>
+                        <rect key="frame" x="25" y="5" width="54" height="54"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="54" id="6ad-Y8-IYG"/>
                             <constraint firstAttribute="width" secondItem="nZy-JT-iDR" secondAttribute="height" multiplier="1:1" id="OzP-ci-bWn"/>
@@ -35,7 +35,7 @@
                     <constraint firstAttribute="bottom" secondItem="nZy-JT-iDR" secondAttribute="bottom" priority="999" constant="5" id="4Pv-9U-auG"/>
                     <constraint firstAttribute="bottom" secondItem="cwh-rI-tRt" secondAttribute="bottom" constant="5" id="5qq-97-re0"/>
                     <constraint firstItem="cwh-rI-tRt" firstAttribute="leading" secondItem="nZy-JT-iDR" secondAttribute="trailing" constant="8" symbolic="YES" id="AL6-lq-gMW"/>
-                    <constraint firstItem="nZy-JT-iDR" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="W0K-aL-yIi"/>
+                    <constraint firstItem="nZy-JT-iDR" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="25" id="W0K-aL-yIi"/>
                     <constraint firstItem="cwh-rI-tRt" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="cbd-IM-Guu"/>
                     <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="cwh-rI-tRt" secondAttribute="trailing" constant="5" id="jqS-4I-sSM"/>
                     <constraint firstItem="nZy-JT-iDR" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" priority="999" constant="5" id="zzb-92-wAD"/>

@@ -18,6 +18,11 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        if let editedCategory = category {
+            nameTextField.text = editedCategory.name
+            imageView.image = editedCategory.image
+        }
+        adjustImageView()
         
         //set action for making photo
         let clickGesture = UITapGestureRecognizer(target: self, action: #selector(self.takePhoto(gesture: )))
@@ -27,10 +32,11 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
         nameTextField.delegate = self
     }
     
-    @IBAction func done(_ sender: UIButton) {
+    @IBAction private func done(_ sender: UIButton) {
         if let name = nameTextField.text, name > ""  {
             if let editedCategory = category {
-                
+                FireDataBase.shared.editCategory(category: editedCategory, newName: name, newImage: imageView.image)
+                DataService.shared.getCategories(in: DataService.shared.parentCategory)
             } else {
                 category = Category(name: name, parent: DataService.shared.parentCategory, image: imageView.image)
                 FireDataBase.shared.createCategory(category: category!)
@@ -61,7 +67,7 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
     @IBOutlet weak var imgHeightConstraint: NSLayoutConstraint!
     
     
-    @objc func takePhoto(gesture : UITapGestureRecognizer) {
+    @objc private func takePhoto(gesture : UITapGestureRecognizer) {
         let pickerImage = PhotoPicker.shared
         pickerImage.photoPickerDelegate = self
         pickerImage.loadImage()
@@ -72,19 +78,8 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
         adjustImageView()
     }
     
-    func adjustImageView() {
-        if let img = imageView.image, img.size.width > 0, img.size.height > 0 {
-            if img.size.width > img.size.height {
-                //imageView.frame.size.height = imageView.frame.width * (img.size.height / img.size.width)
-                imgHeightConstraint.constant = imgWidthConstraint.constant * (img.size.height / img.size.width)
-            } else {
-                //imageView.frame.size.width = imageView.frame.height * (img.size.width / img.size.height)
-                imgWidthConstraint.constant = imgHeightConstraint.constant * (img.size.width / img.size.height)
-            }
-        }
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 0.3
-        imageView.setNeedsLayout()
+    private func adjustImageView() {
+        imageWork.adjustImageView(imageView: &imageView, widthConstraint: &imgWidthConstraint, heightConstraint: &imgHeightConstraint)
     }
     
     /*

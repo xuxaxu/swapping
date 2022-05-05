@@ -7,22 +7,38 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseAuthUI
 
-class DataService : NSObject, FireDataBaseDelegate {
+class DataService : NSObject, FireDataBaseDelegate, FUIAuthDelegate {
     
     static var shared = DataService()
     
-    var currentUser : User?
-    
     //MARK: - vc for refreshing data
     
-    weak var delegateCategories : DataServiceDelegate?
+    weak var delegate : DataServiceDelegate?
     
     //MARK: - Data for using
     
     var categories : [Category] = []
     
     var parentCategory : Category?
+    
+    var topLevelCategories : [String] = []
+    
+    var allCategories : Dictionary<String, [String]> = [:]
+    
+    var products : [Product] = []
+    
+    //MARK: - authenication
+    var currentUser : User?
+    
+    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
+        if let _ = error {
+            
+        } else {
+            currentUser = authDataResult?.user
+        }
+    }
     
     //MARK: - events for updating data
     
@@ -35,7 +51,7 @@ class DataService : NSObject, FireDataBaseDelegate {
                     let category = Category(name: name, parent: self.parentCategory, image: nil)
                     categories.append(category)
                     
-                    if let imageUrl = dict["imageUrl"] as? String {
+                    if let imageUrl = dict["image_url"] as? String {
                         if let url = URL(string: imageUrl) {
                             category.imgUrl = url
                             FireDataBase.shared.downloadImage(url: url, owner: category)
@@ -43,24 +59,47 @@ class DataService : NSObject, FireDataBaseDelegate {
                     }
                 }
             }
-            delegateCategories?.refreshData()
+            delegate?.refreshData()
+        case .topLevelCategory:
+            
+            delegate?.refreshData()
             
         case .product:
-            delegateCategories?.refreshData()
             
-        case .feacher:
-            delegateCategories?.refreshData()
+            delegate?.refreshData()
+            
+        case .feature:
+            delegate?.refreshData()
             
         case .appUser:
-            delegateCategories?.refreshData()
+            delegate?.refreshData()
             
         }
+    }
+    
+    func jsonGotten(data: Data, id: String) {
+        if let product = try? JSONDecoder().decode(Product.self, from: data) {
+            product.id = id
+            products.append(product)
+            
+            if let imageUrl = product.imgUrl {
+                FireDataBase.shared.downloadImage(url: imageUrl, owner: product)
+            }
+        }
+        
+        delegate?.refreshData()
     }
     
     func mediaGotten(owner: ObjectWithImage) {
         if let category = owner as? Category {
             if let index = categories.firstIndex(of: category) {
-                delegateCategories?.refreshRow(indexPath: IndexPath(row: index, section: 0))
+                delegate?.refreshRow(indexPath: IndexPath(row: index, section: 0))
+            }
+        } else {
+            if let product = owner as? Product {
+                if let index = products.firstIndex(of: product) {
+                    delegate?.refreshRow(indexPath: IndexPath(item: index, section: 0))
+                }
             }
         }
     }
@@ -76,7 +115,7 @@ class DataService : NSObject, FireDataBaseDelegate {
     }
     
     //MARK: - work with Category
-    
+    //get only child categories of argument from FireDB
     func getCategories(in category: Category?) {
         
         parentCategory = category
@@ -87,12 +126,31 @@ class DataService : NSObject, FireDataBaseDelegate {
         FireDataBase.shared.getCategories(in: category)
     }
     
+    //create new category in FireDB
     func createCategory(category: Category) {
         FireDataBase.shared.createCategory(category: category)
         
         if let inx = categories.firstIndex(of: category) {
-            delegateCategories?.refreshRow(indexPath: IndexPath(row: inx, section: 0))
+            delegate?.refreshRow(indexPath: IndexPath(row: inx, section: 1))
         }
+    }
+    
+    func correctCategoryName(name : String?) -> Bool {
+         
+        guard let name = name, name != "" else {return false}
+        
+            for (key, value) in allCategories {
+                if value.contains(name) || (value.count == 0 && key == name) {
+                    return true
+                }
+            }        
+        return false
+    }
+    
+    //MARK: - work with products
+    func getProducts() {
+        products = []
+        FireDataBase.shared.getProducts()
     }
     
 }
@@ -102,17 +160,4 @@ protocol DataServiceDelegate : UIViewController {
     func refreshData()
     
     func refreshRow(indexPath: IndexPath)
-}
-
-//which kind of data we'll be work with
-enum kindData {
-    case category
-    case product
-    case feacher
-    case appUser
-}
-
-//any kind who have image
-protocol ObjectWithImage : AnyObject {
-    var image : UIImage? {get set}
 }

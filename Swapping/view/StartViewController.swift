@@ -20,7 +20,8 @@ class StartViewController: UIViewController {
         super.viewDidAppear(animated)
         SwappingAuth().signInSwap(in: self)
         
-        Coordinator.showCategories(in: nil, presentingVC: self)
+        //Coordinator.showCategories(in: nil, presentingVC: self)
+        Coordinator.showProducts(presentingVC: self)
     }
     
     /*
