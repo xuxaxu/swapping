@@ -60,6 +60,11 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row < DataService.shared.products.count {
+            Coordinator.showProductDialogue(product: DataService.shared.products[indexPath.row], in: self)
+        }
+    }
 
     /*
     // MARK: - Navigation

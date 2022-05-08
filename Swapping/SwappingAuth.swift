@@ -15,9 +15,9 @@ import FirebaseEmailAuthUI
 
 class SwappingAuth: NSObject, FUIAuthDelegate {
      
-    func signInSwap(in vc : UIViewController) {
+    func signInSwap(in vc : UIViewController & FUIAuthDelegate) {
             if let authUI = FUIAuth.defaultAuthUI() {
-                authUI.delegate = DataService.shared
+                authUI.delegate = vc
             
                 authUI.providers = [FUIEmailAuth(), FUIOAuth.appleAuthProvider()]
     

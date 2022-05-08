@@ -6,32 +6,35 @@
 //
 
 import UIKit
+import FirebaseAuthUI
 
-class StartViewController: UIViewController {
+class StartViewController: UIViewController, FUIAuthDelegate {
 
+    private var authStarted = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
     
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        SwappingAuth().signInSwap(in: self)
         
-        //Coordinator.showCategories(in: nil, presentingVC: self)
-        Coordinator.showProducts(presentingVC: self)
+        if !authStarted {
+            authStarted = true
+            SwappingAuth().signInSwap(in: self)
+        }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
+        if let _ = error {
+            
+        } else {
+            DataService.shared.currentUser = authDataResult?.user
+        }
+        Coordinator.showMainTabBar(in: self)
+        //Coordinator.dismiss(vc: self)
     }
-    */
 
 }

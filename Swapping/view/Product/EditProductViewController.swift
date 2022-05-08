@@ -172,7 +172,8 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     @IBAction private func done(_ sender: UIButton) {
         
         if DataService.shared.currentUser == nil {
-            SwappingAuth().signInSwap(in: self)
+            Coordinator.showStartVC(in: self)
+            //SwappingAuth().signInSwap(in: self)
         }
         
         guard let name = shortTextView.text, name != "" else {

@@ -8,14 +8,15 @@
 import Foundation
 import Firebase
 
-class Category : ObjectWithImage, Equatable {
+class Category : ObjectWithImage, Equatable, Decodable {
     
     var name : String?
     var parent : Category?
     var image : UIImage?
     var imgUrl : URL?
     
-    init(name : String, parent : Category?, image : UIImage?) {
+    convenience init(name : String, parent : Category?, image : UIImage?) {
+        self.init()
         self.name = name
         self.parent = parent
         self.image = image
@@ -29,12 +30,26 @@ class Category : ObjectWithImage, Equatable {
         }
     }
     
-    required init(name: String) {
-        self.name = name
+    enum CodingKeys: String, CodingKey {
+        case name
+        case imgUrl = "image_url"
     }
     
     static func == (lhs: Category, rhs: Category) -> Bool {
         return lhs.name == rhs.name
+    }
+    
+    convenience required init(from decoder: Decoder) throws {
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.imgUrl = try container.decodeIfPresent(URL.self, forKey: .imgUrl)
+        
+    }
+    
+    class func primaryKey() -> String? {
+        return "name"
     }
 }
 

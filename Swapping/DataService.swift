@@ -7,9 +7,8 @@
 
 import Foundation
 import FirebaseAuth
-import FirebaseAuthUI
 
-class DataService : NSObject, FireDataBaseDelegate, FUIAuthDelegate {
+class DataService : NSObject, FireDataBaseDelegate {
     
     static var shared = DataService()
     
@@ -32,14 +31,6 @@ class DataService : NSObject, FireDataBaseDelegate, FUIAuthDelegate {
     //MARK: - authenication
     var currentUser : User?
     
-    func authUI(_ authUI: FUIAuth, didSignInWith authDataResult: AuthDataResult?, error: Error?) {
-        if let _ = error {
-            
-        } else {
-            currentUser = authDataResult?.user
-        }
-    }
-    
     //MARK: - events for updating data
     
     func DataGotten(kind: kindData, data: [Dictionary<String, Any>]) {
@@ -54,7 +45,7 @@ class DataService : NSObject, FireDataBaseDelegate, FUIAuthDelegate {
                     if let imageUrl = dict["image_url"] as? String {
                         if let url = URL(string: imageUrl) {
                             category.imgUrl = url
-                            FireDataBase.shared.downloadImage(url: url, owner: category)
+                            FireDataBase.shared.downloadImage(owner: category)
                         }
                     }
                 }
@@ -77,13 +68,23 @@ class DataService : NSObject, FireDataBaseDelegate, FUIAuthDelegate {
         }
     }
     
-    func jsonGotten(data: Data, id: String) {
-        if let product = try? JSONDecoder().decode(Product.self, from: data) {
-            product.id = id
-            products.append(product)
-            
-            if let imageUrl = product.imgUrl {
-                FireDataBase.shared.downloadImage(url: imageUrl, owner: product)
+    func jsonGotten(data: Data, id: String, kindOfData: kindData) {
+        if kindOfData == .product {
+            if let product = try? JSONDecoder().decode(Product.self, from: data) {
+                product.id = id
+                products.append(product)
+                
+                FireDataBase.shared.downloadImage(owner: product)
+                
+            }
+        } else {
+            if kindOfData == .category {
+                if let category = try? JSONDecoder().decode(Category.self, from: data) {
+                    categories.append(category)
+                    
+                    FireDataBase.shared.downloadImage(owner: category)
+                    
+                }
             }
         }
         

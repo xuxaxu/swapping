@@ -39,16 +39,24 @@ class FireDataBase {
                 
             } else {
             
-                if self?.kindOfData == .product {
+                if let kindOfData = self?.kindOfData {
                     //decode product
                     for child in snapshot.children {
                         let childSnapshot = child as! DataSnapshot
-                        if let data = try? JSONSerialization.data(withJSONObject: childSnapshot.value) {
-                            DataService.shared.jsonGotten(data: data, id: childSnapshot.key)
+                        if let value = childSnapshot.value {
+                            if let _ = value as? String {
+                                //if need fields of parent element
+                            } else {
+                                do { let jsonData = try JSONSerialization.data(withJSONObject: value)
+                                        DataService.shared.jsonGotten(data: jsonData, id: childSnapshot.key, kindOfData: kindOfData)
+                                } catch {
+                                    //here fields of upper element
+                                }
+                            }
                         }
                     }
                     
-                } else {
+                } /* else {
                 
                     var arrayData : [Dictionary<String, Any>] = []
                 
@@ -62,6 +70,7 @@ class FireDataBase {
                         self?.delegate?.DataGotten(kind: kindOfData, data: arrayData)
                     }
                 }
+                */
             }
         }
             )
@@ -129,18 +138,20 @@ class FireDataBase {
         }
     }
     
-    func downloadImage(url: URL, owner: ObjectWithImage) {
+    func downloadImage(owner: ObjectWithImage) {
      
-        let urlString = url.absoluteString
-        let imageRef = storage.reference(forURL: urlString)
-                imageRef.getData(maxSize: 1 * 1024 * 1024) { (data, error) in
-                    if let _ = error {
-                        //can't dowmload image
-                    } else {
-                        owner.image = UIImage(data: data!)
-                        DataService.shared.mediaGotten(owner: owner)
+        if let url = owner.imgUrl {
+            let urlString = url.absoluteString
+            let imageRef = storage.reference(forURL: urlString)
+                    imageRef.getData(maxSize: 1 * 1024 * 1024) { (data, error) in
+                        if let _ = error {
+                            //can't dowmload image
+                        } else {
+                            owner.image = UIImage(data: data!)
+                            DataService.shared.mediaGotten(owner: owner)
+                        }
                     }
-                }
+        }
     }
     
     //MARK: - upload/download categories

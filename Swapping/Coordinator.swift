@@ -16,12 +16,47 @@ final class Coordinator {
     }
     
     static func presentVC(newOne: UIViewController, oldOne: UIViewController) {
-        //newOne.modalPresentationStyle = .fullScreen
+        newOne.modalPresentationStyle = .fullScreen
         
         if let navigationController = oldOne.navigationController {
             navigationController.pushViewController(newOne, animated: true)
         } else {
-            oldOne.present(newOne, animated: true)
+            
+            if let window = oldOne.view.window {
+                window.rootViewController = newOne
+            } else {
+                oldOne.present(newOne, animated: true)
+            }
+        }
+    }
+    
+    static func dismiss(vc : UIViewController) {
+        if let nc = vc.navigationController {
+            nc.popViewController(animated: true)
+        } else {
+            vc.dismiss(animated: true)
+        }
+    }
+    
+    static func showAlert(message: String, in vc: UIViewController) {
+            
+        let alert = UIAlertController(title: message, message: "error.", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
+       
+        vc.present(alert, animated: true)
+    }
+    
+    static func showMainTabBar(in vc: UIViewController) {
+        if let tabBar = getVC(id: "tabBarMainId") as? UITabBarController {
+            tabBar.modalPresentationStyle = .fullScreen
+            presentVC(newOne: tabBar, oldOne: vc)
+        }
+    }
+    
+    static func showStartVC(in vc: UIViewController) {
+        if let startVC = getVC(id: "startVCId") as? StartViewController {
+            presentVC(newOne: startVC, oldOne: vc)
         }
     }
     
@@ -43,14 +78,6 @@ final class Coordinator {
         
     }
     
-    static func dismiss(vc : UIViewController) {
-        if let nc = vc.navigationController {
-            nc.popViewController(animated: true)
-        } else {
-            vc.dismiss(animated: true)
-        }
-    }
-    
     static func showProducts(presentingVC: UIViewController) {
         if let vcProduct = getVC(id: "ProductCollectionId") {
             presentVC(newOne: vcProduct, oldOne: presentingVC)
@@ -64,13 +91,12 @@ final class Coordinator {
         }
     }
     
-    static func showAlert(message: String, in vc: UIViewController) {
-            
-        let alert = UIAlertController(title: message, message: "error.", preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
-       
-        vc.present(alert, animated: true)
+    static func showProductDialogue(product: Product, in vc: UIViewController) {
+        
+        if let productVC = getVC(id: "ProductDialogueId") as? ProductChooseViewController {
+            productVC.product = product
+            presentVC(newOne: productVC, oldOne: vc)
+        }
     }
     
 }
