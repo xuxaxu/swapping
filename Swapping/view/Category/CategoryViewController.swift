@@ -8,9 +8,11 @@
 import UIKit
 import PhotosUI
 
-class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextFieldDelegate {
+class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextFieldDelegate, CoordinatedVC {
     
-    var category : Category?
+    var coordinator: Coordinator?
+    
+    var model: CategoryVM!
     
     @IBOutlet weak var nameTextField: UITextField!
     
@@ -18,7 +20,7 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        if let editedCategory = category {
+        if let model = model, let editedCategory = model.category {
             nameTextField.text = editedCategory.name
             imageView.image = editedCategory.image
         }
@@ -30,21 +32,26 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
         imageView.addGestureRecognizer(clickGesture)
         
         nameTextField.delegate = self
+        
+        bindViewModel()
+    }
+    
+    private func bindViewModel() {
+        model?.errorMessage.bind({ [weak self] message in
+            self?.coordinator?.showAlert(message: message, in: self!)
+        })
     }
     
     @IBAction private func done(_ sender: UIButton) {
         if let name = nameTextField.text, name > ""  {
-            if let editedCategory = category {
-                FireDataBase.shared.editCategory(category: editedCategory, newName: name, newImage: imageView.image)
-                DataService.shared.getCategories(in: DataService.shared.parentCategory)
-            } else {
-                category = Category(name: name, parent: DataService.shared.parentCategory, image: imageView.image)
-                FireDataBase.shared.createCategory(category: category!)
-                DataService.shared.getCategories(in: DataService.shared.parentCategory)
+            if let model = model {
+                model.editFinished(name: name, image: imageView.image)
             }
         }
         
-        Coordinator.dismiss(vc: self)
+        if let coordinator = coordinator {
+            coordinator.dismiss(vc: self)
+        }
     }
     
     //MARK: - text fiels

@@ -23,7 +23,7 @@ class SwappingTests: XCTestCase {
         try super.setUpWithError()
         sut = imageWork()
         
-        sutDataBase = FireDataBase.shared
+        sutDataBase = FireDataBase(container: Container(), args: ())
     }
 
     override func tearDownWithError() throws {
@@ -56,18 +56,65 @@ class SwappingTests: XCTestCase {
     }
     
     func testFireDataBaseGetDataForCategories() {
-        sutDataBase?.getData(path: "categories/")
+        let promise = expectation(description: "categories recieved")
+        
+        var categoriesCount = 0
+        var nameOfFirstCategory: String?
+        sutDataBase?.getData(path: "categories/") {dict  in
+            categoriesCount = dict.count
+            
+            for (_, value) in dict {
+                if let object = try? JSONDecoder().decode(Category.self, from: value) {
+                    nameOfFirstCategory = object.name
+                }
+                break
+            }
+            promise.fulfill()
+        }
+        wait(for: [promise], timeout: 5)
+        XCTAssert(categoriesCount > 0)
+        XCTAssertNotNil(nameOfFirstCategory)
     }
     
     func testFireDataBaseGetDataForProducts() {
-        sutDataBase?.getData(path: "products/")
+        let promise = expectation(description: "products recieved")
+    
+        var productsCount = 0
+        var nameOfFirstProduct: String?
+        var categoryOfFirstProduct: String?
+        
+        sutDataBase?.getData(path: "products/"){dict in
+            productsCount = dict.count
+            
+            for object in dict.values {
+                if let product = try? JSONDecoder().decode(Product.self, from: object) {
+                    nameOfFirstProduct = product.name
+                    categoryOfFirstProduct = product.category
+                }
+                break
+            }
+            promise.fulfill()
+        }
+        
+        wait(for: [promise], timeout: 5)
+        XCTAssert(productsCount > 0)
+        XCTAssertNotNil(nameOfFirstProduct)
+        XCTAssertNotNil(categoryOfFirstProduct)
     }
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        measure {
+        measure(metrics: [XCTClockMetric(), XCTCPUMetric(), XCTStorageMetric(), XCTMemoryMetric()]) {
             // Put the code you want to measure the time of here.
+            sutDataBase?.getData(path: "products", complition: { dict in
+                for object in dict.values {
+                    if let _ = try? JSONDecoder().decode(Product.self, from: object) {
+                        
+                    }
+                }
+            })
         }
     }
+    
 
 }

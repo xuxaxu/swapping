@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="X4v-1y-03y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
@@ -122,7 +122,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="launch" translatesAutoresizingMaskIntoConstraints="NO" id="ato-Th-cBc">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" restorationIdentifier="startVCId" image="launch" translatesAutoresizingMaskIntoConstraints="NO" id="ato-Th-cBc">
                                 <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                             </imageView>
                         </subviews>
@@ -226,8 +226,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z2R-mc-gxX">
-                                <rect key="frame" x="82" y="76.5" width="250" height="753"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Z2R-mc-gxX">
+                                <rect key="frame" x="82" y="273" width="250" height="311"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="product" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="r01-2j-kIu">
                                         <rect key="frame" x="91.5" y="0.0" width="67.5" height="20.5"/>
@@ -235,15 +235,18 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="discription" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="fvA-5w-kue">
-                                        <rect key="frame" x="5" y="20.5" width="240" height="462"/>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="TopLeft" insetsLayoutMarginsFromSafeArea="NO" scrollEnabled="NO" editable="NO" text="discription" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="fvA-5w-kue">
+                                        <rect key="frame" x="5" y="20.5" width="240" height="20"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="AeX-mx-9Zs"/>
+                                        </constraints>
                                         <color key="textColor" systemColor="labelColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="yV5-CF-s4V">
-                                        <rect key="frame" x="0.0" y="483" width="250" height="248"/>
+                                        <rect key="frame" x="0.0" y="41" width="250" height="248"/>
                                         <color key="tintColor" systemColor="systemTealColor"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="250" id="Bbg-RY-c4t"/>
@@ -251,15 +254,19 @@
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="owner" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L4m-1W-5Ym">
-                                        <rect key="frame" x="101.5" y="732.5" width="47" height="20.5"/>
+                                        <rect key="frame" x="101.5" y="290.5" width="47" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstItem="fvA-5w-kue" firstAttribute="leading" secondItem="Z2R-mc-gxX" secondAttribute="leading" constant="5" id="DIJ-VR-J3p"/>
+                                    <constraint firstItem="fvA-5w-kue" firstAttribute="top" secondItem="r01-2j-kIu" secondAttribute="bottom" id="sgS-Gx-Slf"/>
+                                </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="category" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vfj-GD-6Xa">
-                                <rect key="frame" x="30" y="64" width="67.5" height="20.5"/>
+                                <rect key="frame" x="30" y="64" width="67.5" height="217"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -275,6 +282,11 @@
                             <constraint firstItem="Vfj-GD-6Xa" firstAttribute="leading" secondItem="6pL-3e-ZAf" secondAttribute="leading" constant="30" id="oyO-aw-2oT"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="oq3-OT-WwX">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="FQz-ty-rl7"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="categoryLabelView" destination="Vfj-GD-6Xa" id="n28-Dq-y6M"/>
                         <outlet property="descriptionLabelView" destination="fvA-5w-kue" id="JvA-ih-YHU"/>

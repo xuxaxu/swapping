@@ -7,28 +7,15 @@
 
 import UIKit
 
-class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, DataServiceDelegate, FireDataBaseAlertDelegate {
+class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CoordinatedVC {
     
-    func showAlert(message: String) {
-        Coordinator.showAlert(message: message, in: self)
-    }
+    var coordinator: Coordinator?
     
-    
+    var model: CategoryListVM!
+        
     @IBOutlet weak var categoryTableView: UITableView!
     
-    var categories : [Category] = []
-    
-    var parentCategory : Category?
-    
     let refreshControl = UIRefreshControl()
-    
-    @IBAction func addCategory(_ sender: UIBarButtonItem) {
-        
-            if categories.count > 0 {
-                DataService.shared.parentCategory = self.categories[0].parent
-            }
-        Coordinator.showEditingCategory(category: nil, presentingVC: self)
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +27,26 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(self.startRefreshingData), for: .valueChanged)
         categoryTableView.refreshControl = refreshControl
+        
+        bindViewModel()
      }
+    
+    func bindViewModel() {
+        model?.allDataChanged.bind({ [weak self] changed in
+            if changed {
+                self?.refreshData()
+            }
+        })
+        
+        model?.rowChanged.bind({ [weak self] inx in
+            //self?.refreshRow(indexPath: IndexPath(row: inx, section: 1))
+            self?.categoryTableView.reloadRows(at: [IndexPath(row: inx, section: 0)], with: .fade)
+        })
+        
+        model?.errorMessage.bind({ [weak self] message in
+            self?.coordinator?.showAlert(message: message, in: self!)
+        })
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -53,12 +59,16 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        if model != nil {
+            return model!.categories.count
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as? CategoryTableViewCell {
-            let category = categories[indexPath.row]
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as? CategoryTableViewCell, let model = self.model {
+            let category = model.categories[indexPath.row]
             cell.configure(name: (category.name ?? "unknown"), img: category.image)
             
             return cell
@@ -68,12 +78,13 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     }
     
     @objc func startRefreshingData() {
-        DataService.shared.delegate = self
-        DataService.shared.getCategories(in: parentCategory)
+        if model != nil {
+            model!.getCategories()
+        }
     }
     
     func refreshData() {
-        categories = DataService.shared.categories
+        
         categoryTableView.reloadData()
         if refreshControl.isRefreshing {
             refreshControl.endRefreshing()
@@ -81,9 +92,11 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row < categories.count {
-            let category = categories[indexPath.row]
-            Coordinator.showCategories(in: category, presentingVC: self)
+        if let model = model, indexPath.row < model.categories.count {
+            let category = model.categories[indexPath.row]
+            if let coordinator = coordinator {
+                coordinator.showCategories(in: category, presentingVC: self)
+            }
         }
     }
     
@@ -92,7 +105,7 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     }
     
     func refreshRow(indexPath: IndexPath) {
-        categoryTableView.reloadRows(at: [indexPath], with: .fade)
+        self.categoryTableView.reloadRows(at: [indexPath], with: .fade)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -102,7 +115,7 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let viewParent = Bundle.main.loadNibNamed("CategorySectionTableViewCell", owner: self)?[0] as? CategorySectionTableViewCell
-        if let sectionCategory = parentCategory {
+        if let model = model, let sectionCategory = model.parentCategory {
             viewParent?.configure(text: (sectionCategory.name ?? "unknown"), image: sectionCategory.image)
         } else {
             viewParent?.configure(text: "", image: nil)
@@ -113,22 +126,30 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, D
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let editAction = UIContextualAction(style: .normal, title: "edit") {[weak self] _,_,_ in
-            if let weakSelf = self, indexPath.row < weakSelf.categories.count {
-                DataService.shared.parentCategory = weakSelf.categories[0].parent
-                Coordinator.showEditingCategory(category: weakSelf.categories[indexPath.row], presentingVC: weakSelf)
+            if let weakSelf = self, let model = weakSelf.model, indexPath.row < model.categories.count, let coordinator = weakSelf.coordinator {
+                coordinator.showEditingCategory(category: model.categories[indexPath.row], parentCategory: model.parentCategory, presentingVC: weakSelf)
             }
         }
         
         let deleteAction = UIContextualAction(style: .destructive, title: "delete") {[weak self] _,_,_ in
-            if let weakSelf = self, indexPath.row < weakSelf.categories.count {
-                FireDataBase.shared.alertDelegate = weakSelf
-                FireDataBase.shared.deleteCategory(category: weakSelf.categories[indexPath.row], vcForAlert: weakSelf)
-                weakSelf.categories.remove(at: indexPath.row)
-                tableView.reloadData()
+            if let weakSelf = self, let model = weakSelf.model, indexPath.row < model.categories.count {
+                
+                model.deleteCategory(inx: indexPath.row) { [weak self] massage in
+                    if let weakSelf = self, let coordinator = weakSelf.coordinator {
+                        coordinator.showAlert(message: massage, in: weakSelf)
+                    }
+                }
             }
         }
         
         return UISwipeActionsConfiguration(actions: [editAction, deleteAction])
+    }
+    
+    @IBAction func addCategory(_ sender: UIBarButtonItem) {
+        if let coordinator = coordinator {
+            let parentCategory = model?.parentCategory
+            coordinator.showEditingCategory(category: nil, parentCategory: parentCategory, presentingVC: self)
+        }
     }
     
 }

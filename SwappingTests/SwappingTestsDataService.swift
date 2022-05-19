@@ -11,12 +11,13 @@ import XCTest
 
 class SwappingTestsDataService: XCTestCase {
     
-    var sut: DataService?
+    
+    var sut: DataService<DataObject>?
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        sut = DataService.shared
+        sut = DataService(container: Container(), args: DataObject.self)
     }
 
     override func tearDownWithError() throws {
@@ -31,7 +32,7 @@ class SwappingTestsDataService: XCTestCase {
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        let json : [String: Any] = [
+        let _ : [String: Any] = [
                   "image_url": "https://firebasestorage.googleapis.com:443/v0/b/swappingapp-c409e.appspot.com/o/systemImages%2Fclothe.jpeg?alt=media&token=56c9a7e9-703d-4d53-8955-18c1c405bf30",
                   "men": [
                     "image_url": "https://firebasestorage.googleapis.com:443/v0/b/swappingapp-c409e.appspot.com/o/systemImages%2Fmen.jpeg?alt=media&token=f923f349-f4f6-4b02-8055-38686b559e6f",
@@ -44,13 +45,26 @@ class SwappingTestsDataService: XCTestCase {
                     "name": "women"
                   ]
         ]
-        let data = try JSONSerialization.data(withJSONObject: json)
-        sut?.jsonGotten(data: data, id: "", kindOfData: .category)
         
-        let category = Category()
+        let promise = expectation(description: "categories decoded")
+        
+        var objectExample = DataObject()
+        sut?.getData(ref: "categories/") { arrayOfObjects in
+            for object in arrayOfObjects {
+                if object.name == "clothe" {
+                    objectExample = object
+                    promise.fulfill()
+                    break
+                }
+            }
+        }
+        
+        wait(for: [promise], timeout: 50)
+        
+        let category = DataObject()
         category.name = "clothe"
         
-        XCTAssertEqual(sut?.categories, [category])
+       XCTAssertEqual(objectExample, category)
     }
     
     func testJsonProductGotten() throws {
@@ -61,28 +75,13 @@ class SwappingTestsDataService: XCTestCase {
                   "description":  "description of product"
         ]
         let data = try JSONSerialization.data(withJSONObject: json)
-        sut?.jsonGotten(data: data, id: "111", kindOfData: .product)
+        //sut?.jsonGotten(data: data, id: "111", kind: .product)
         
         let product = Product(name: "product1", category: "clothe", image: nil, features: nil, description: "description of product")
         product.id = "111"
         
-        XCTAssertEqual(sut?.products, [product])
-        XCTAssertEqual(sut?.products[0].name, product.name)
-        XCTAssertEqual(sut?.products[0].productDescription, product.productDescription)
-        XCTAssertEqual(sut?.products[0].category, product.category)
-    }
-    
-    func testCompressConstant0sizeImage() {
-        let int1 = sut?.compressInt(image: UIImage())
-        XCTAssertEqual(int1, 1)
-    }
-    
-    func testCompressConstant() {
-        if let image = UIImage(systemName: "camera") {
-            let compressConst = sut?.compressInt(image: image)
-            XCTAssertNotNil(compressConst)
-            XCTAssertLessThanOrEqual(compressConst!, 1)
-        }
+       // XCTAssertEqual(sut?.products, [product])
+
     }
     
     func testGetRootCategories() {

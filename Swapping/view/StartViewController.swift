@@ -8,9 +8,11 @@
 import UIKit
 import FirebaseAuthUI
 
-class StartViewController: UIViewController, FUIAuthDelegate {
-
+class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
+    
     private var authStarted = false
+    
+    var coordinator : Coordinator?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,10 +33,10 @@ class StartViewController: UIViewController, FUIAuthDelegate {
         if let _ = error {
             
         } else {
-            DataService.shared.currentUser = authDataResult?.user
+            //DataService.shared.currentUser = authDataResult?.user
         }
-        Coordinator.showMainTabBar(in: self)
-        //Coordinator.dismiss(vc: self)
+        coordinator?.showMainTabBar(in: self)
+        coordinator?.dismiss(vc: self)
     }
 
 }

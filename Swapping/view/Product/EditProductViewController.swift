@@ -7,20 +7,24 @@
 
 import UIKit
 
-class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, PhotoPickerDelegate {
+class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, PhotoPickerDelegate, CoordinatedVC {
     
-    var product: Product?
+    var coordinator: Coordinator?
+    
+    var model: ProductEditVM!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        FireDataBase.shared.getCategoriesForPicker()
+        bindViewModel()
+        
+        model.fillTopLevelCategories()
 
-        if product != nil {
-            shortTextView.text = product!.name
-            productImageView.image = product!.image
-            longTextView.text = product!.productDescription
-            categoryTextField.text = product!.category
+        if let product = model.product {
+            shortTextView.text = product.name
+            productImageView.image = product.image
+            longTextView.text = product.productDescription
+            categoryTextField.text = product.category
         }
         
         pickerView.dataSource = self
@@ -34,6 +38,20 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
         clickGesture.numberOfTapsRequired = 1
         productImageView.addGestureRecognizer(clickGesture)
         
+    }
+    
+    func bindViewModel() {
+        model.topLevelCategoryNames.bind { [weak self] topLevels in
+            self?.filteredTopLevelCategories = topLevels
+        }
+        
+        model.allCategories.bind { [weak self] dictCategories in
+            self?.filteredCategories = dictCategories
+        }
+        
+        model.errorMessage.bind { [weak self] message in
+            self?.coordinator?.showAlert(message: message, in: self!)
+        }
     }
     
     @IBOutlet private weak var shortTextView: UITextField!
@@ -115,13 +133,13 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     }
     
     @IBAction private func categoryTextDidBegin(_ sender: UITextField) {
-        filteredTopLevelCategories = DataService.shared.topLevelCategories
-        filteredCategories = DataService.shared.allCategories
+        filteredTopLevelCategories = model.topLevelCategoryNames.value
+        filteredCategories = model.allCategories.value
     }
     
     @IBAction private func categoryTextEditingChanged(_ sender: UITextField) {
         if let text = categoryTextField.text, text != "" {
-            filteredCategories = DataService.shared.allCategories.filter({ (key, value) in
+            filteredCategories = model.allCategories.value.filter({ (key, value) in
                 value.filter{$0.starts(with: text)}.count > 0
             })
             for (key, value) in filteredCategories {
@@ -129,17 +147,19 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
             }
             filteredTopLevelCategories = Array(filteredCategories.keys)
         } else {
-            filteredTopLevelCategories = DataService.shared.topLevelCategories
-            filteredCategories = DataService.shared.allCategories
+            filteredTopLevelCategories = model.topLevelCategoryNames.value
+            filteredCategories = model.allCategories.value
         }
         pickerView.reloadComponent(0)
         pickerView.reloadComponent(1)
     }
     
     @IBAction private func categoryTextDidEnd(_ sender: UITextField) {
-        if !DataService.shared.correctCategoryName(name: categoryTextField.text) {
+        if !model.correctCategoryName(name: categoryTextField.text) {
                 categoryTextField.text = ""
-                Coordinator.showAlert(message: "Choose from sugested values please", in: self)
+            if let coordinator = coordinator {
+                coordinator.showAlert(message: "Choose from sugested values please", in: self)
+            }
         } else {
             categoryTextField.backgroundColor = .clear
         }
@@ -171,33 +191,22 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     //MARK: - finish editing or creating product
     @IBAction private func done(_ sender: UIButton) {
         
-        if DataService.shared.currentUser == nil {
-            Coordinator.showStartVC(in: self)
+        //if DataService.shared.currentUser == nil {
+          //  coordinator.showStartVC(in: self)
             //SwappingAuth().signInSwap(in: self)
-        }
+        //}
         
         guard let name = shortTextView.text, name != "" else {
             shortTextView.backgroundColor = .systemPink
             return
         }
         
-        guard DataService.shared.correctCategoryName(name: categoryTextField.text) else {
+        guard model.correctCategoryName(name: categoryTextField.text) else {
             categoryTextField.backgroundColor = .systemPink
             return
         }
         
-        if product == nil {
-            product = Product(name: name, category: categoryTextField.text!, image: productImageView.image, features: nil, description: longTextView.text)
-            FireDataBase.shared.editProduct(product: product!)
-        } else {
-            product!.name = shortTextView.text!
-            product!.category = categoryTextField.text!
-            if let image = productImageView.image {
-                product!.image = image
-            }
-            product!.productDescription = longTextView.text
-            FireDataBase.shared.editProduct(product: product!)
-        }
+        model.editProduct(name: name, category: categoryTextField.text!, image: productImageView.image, description: longTextView.text)
         
         if let nc = navigationController {
             if nc.children.count>1, let productsVC = nc.children[nc.children.count-2] as? ProductViewController {

@@ -8,39 +8,29 @@
 import Foundation
 import Firebase
 
-class FireDataBase {
+class FireDataBase : ISingleton {
     
-    static var shared = FireDataBase()
+    required init(container: IContainer, args: ()) { }
     
     var ref : DatabaseReference = Database.database(url: "https://swappingapp-c409e-default-rtdb.europe-west1.firebasedatabase.app/").reference()
     let storage = Storage.storage()
     let storageRef = Storage.storage().reference(forURL: "gs://swappingapp-c409e.appspot.com/")
     
-    weak var delegate : FireDataBaseDelegate? //data service
-    weak var alertDelegate : FireDataBaseAlertDelegate?
-    
-    var kindOfData : kindData? //what data we work with (category, feacher, product or users)
-    
-    
     // MARK: - get Data from DB and put it into array of Any
     
-    func getData(path : String, _ hierarhicaly: Bool = false) {
+    func getData(path : String, complition: @escaping (Dictionary<String, Data>, Error?)->Void) {
         
-        ref.child(path).getData(completion: { [weak self, hierarhicaly] error, snapshot in
+        ref.child(path).getData(completion: { [complition] error, snapshot in
             
             guard error == nil else {
               print(error!.localizedDescription)
+                complition([:], error)
               return
             }
-              
-            if hierarhicaly {
-                
-                self?.getDataHierarhicaly(snapshot: snapshot)
-                
-            } else {
+        
+            //decode
+            var dataRecieved: Dictionary<String, Data> = [:]
             
-                if let kindOfData = self?.kindOfData {
-                    //decode product
                     for child in snapshot.children {
                         let childSnapshot = child as! DataSnapshot
                         if let value = childSnapshot.value {
@@ -48,168 +38,124 @@ class FireDataBase {
                                 //if need fields of parent element
                             } else {
                                 do { let jsonData = try JSONSerialization.data(withJSONObject: value)
-                                        DataService.shared.jsonGotten(data: jsonData, id: childSnapshot.key, kindOfData: kindOfData)
+                                    dataRecieved[childSnapshot.key] = jsonData
                                 } catch {
                                     //here fields of upper element
                                 }
                             }
                         }
                     }
+                 complition(dataRecieved, nil)
                     
-                } /* else {
-                
-                    var arrayData : [Dictionary<String, Any>] = []
-                
-                    for child in snapshot.children {
-                        let childSnapshot = child as! DataSnapshot
-                        if let element = childSnapshot.value as? Dictionary<String, Any> {
-                            arrayData.append(element)
-                          }
-                      }
-                    if let kindOfData = self?.kindOfData {
-                        self?.delegate?.DataGotten(kind: kindOfData, data: arrayData)
-                    }
-                }
-                */
-            }
         }
             )
     }
     
-    func getDataHierarhicaly(snapshot: DataSnapshot, _ topLevel : String = "") {
-        for child in snapshot.children {
-            let childSnapshot = child as! DataSnapshot
-            if let fields = childSnapshot.value as? Dictionary<String, Any> {
-                if let name = fields["name"] as? String {
-                    var currentTopLevel = topLevel
-                    
-                    if self.kindOfData == .topLevelCategory {
-                        if topLevel == "" {
-                            DataService.shared.topLevelCategories.append(name)
-                            currentTopLevel = name
-                        } else {
-                            if DataService.shared.allCategories[currentTopLevel] != nil {
-                                DataService.shared.allCategories[currentTopLevel]!.append(name)
-                            } else {
-                                DataService.shared.allCategories[currentTopLevel] = [name]
-                            }
-                        }
-                    }
-                    getDataHierarhicaly(snapshot: childSnapshot, currentTopLevel)
-                }
-            }
-        }
-    }
-    
     //MARK: - upload/download media
     
-    func uploadImage(image : UIImage, ref: String, owner: ObjectWithImage) {
+    func uploadImage(image : UIImage, ref: String, complition: @escaping (URL)->Void) {
         
-        let refUpload = storageRef.child(ref)
+        let fullRef = "systemImages/" + ref + ".jpeg"
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            if let jpegData = image.jpegData(compressionQuality: DataService.shared.compressInt(image: image)) {
+        let refUpload = storageRef.child(fullRef)
+        
+        DispatchQueue.global(qos: .userInitiated).async { [complition, weak self] in
+            if let weakSelf = self, let jpegData = image.jpegData(compressionQuality: weakSelf.compressInt(image: image)) {
             
-                let _ = refUpload.putData(jpegData, metadata: nil) { [owner, weak self] (metadata, error) in
+                let _ = refUpload.putData(jpegData, metadata: nil) { [complition] (metadata, error) in
                     guard let _ = metadata else {
                         //error of uploading
                         return
                     }
-                    refUpload.downloadURL { url, error in
+                    refUpload.downloadURL { [complition] url, error in
                         guard let url = url else {
                             //error of getting url of image
                             return
                         }
-                        self?.setUrlInObject(url: url, object: owner)
+                        complition(url)
                     }
                 }
             }
         }
     }
     
-    func setUrlInObject(url: URL, object: ObjectWithImage) {
+    private func compressInt(image : UIImage) -> CGFloat {
+        
+        let size = image.size.width * image.size.height
+        if size > 1024 * 1024 {
+            return 1024 * 1024 / size
+        } else {
+            return 1
+        }
+    }
+    
+    func setUrlInObject(url: URL, object: DataObject) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             
-                object.imgUrl = url
                 let firePath = object.getRef()
                 let strUrl = url.absoluteString
                 self?.ref.child(firePath + "/image_url").setValue(strUrl)
-            
+        
         }
     }
     
-    func downloadImage(owner: ObjectWithImage) {
+    func downloadImage(path: URL, complition: @escaping (UIImage)->Void ) {
      
-        if let url = owner.imgUrl {
-            let urlString = url.absoluteString
-            let imageRef = storage.reference(forURL: urlString)
-                    imageRef.getData(maxSize: 1 * 1024 * 1024) { (data, error) in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self, path, complition] in
+            
+            let urlString = path.absoluteString
+            if let imageRef = self?.storage.reference(forURL: urlString) {
+                    imageRef.getData(maxSize: 1 * 1024 * 1024) { [complition] (data, error) in
                         if let _ = error {
                             //can't dowmload image
                         } else {
-                            owner.image = UIImage(data: data!)
-                            DataService.shared.mediaGotten(owner: owner)
+                            if let image = UIImage(data: data!) {
+                                complition(image)
+                            }
                         }
                     }
+            }
         }
     }
     
-    //MARK: - upload/download categories
-    
-    func getCategories(in category : Category?) {
+    func createObject(object : DataObject) {
         
-        let categoryPath = (category?.getRef() ?? "categories") + "/"
+        let objectPath = object.getRef()
         
-        self.kindOfData = .category
+        ref.child(objectPath + "/name").setValue(object.name)
         
-        getData(path: categoryPath)
-                
     }
     
-    func getCategoriesForPicker() {
+    func editObject(object : DataObject, stringValues: Dictionary<String, String>, complition: @escaping (URL)->Void) {
         
-        DataService.shared.topLevelCategories = []
-        DataService.shared.allCategories = [:]
+        let path = object.getRef()+"/"
         
-        self.kindOfData = .topLevelCategory
+        //ref.child(path + "name").setValue(object.name)
         
-        getData(path: "categories/", true)
-
-    }
-    
-    func createCategory(category : Category) {
+        var updates : [AnyHashable : Any] = [:]
+        for (key, value) in stringValues {
+            updates[ path + key] = value
+        }
         
-        let categoryPath = category.getRef()
+        DispatchQueue.global(qos: .userInitiated).async { [ref, updates] in
+            ref.updateChildValues(updates)
+        }
         
-        ref.child(categoryPath + "/name").setValue(category.name)
-        
-        if let image = category.image {
-            uploadImage(image: image, ref: "systemImages/" + (category.name ?? "unknown") + ".jpeg", owner: category)
+        if let image = object.image {
+            uploadImage(image: image, ref: object.id ?? "unknown" + ".jpeg", complition: complition)
         }
     }
     
-    func editCategory(category : Category, newName : String, newImage : UIImage?) {
+    func deleteObject(object : DataObject, complition: @escaping (String)->Void) {
+        //let delete only if there are not childs
         
-        let categoryPath = category.getRef()
+        let path = object.getRef()
         
-        ref.child(categoryPath + "/name").setValue(newName)
-        category.name = newName
-        
-        if let image = newImage {
-            uploadImage(image: image, ref: "systemImages/" + (category.name ?? "unknown") + ".jpeg", owner: category)
-        }
-    }
-    
-    func deleteCategory(category : Category, vcForAlert : UIViewController) {
-        //let delete only if there are not child categories
-        
-        let categoryPath = category.getRef()
-        
-        DispatchQueue.global(qos: .userInitiated).async {[weak self] in
+        DispatchQueue.global(qos: .userInitiated).async {[weak self, complition] in
             
-            self?.ref.child(categoryPath).getData { [weak self] error, snapshot in
+            self?.ref.child(path).getData { [weak self] error, snapshot in
                 guard error == nil else {
-                    DataService.shared.getCategories(in: category.parent)
+                    complition("not ability to read object")
                     return
                 }
                 var noChild = true
@@ -220,74 +166,20 @@ class FireDataBase {
                     }
                 }
                 if noChild {
-                    self?.ref.child(categoryPath).removeValue()
+                    self?.ref.child(path).removeValue()
+                    complition("deletion succeeded")
                 } else {
-                    DataService.shared.getCategories(in: category.parent)
-                    
-                    self?.alertDelegate?.showAlert(message: "Forbidden delete category with child categories")
+                    complition("Forbidden delete category with child categories")
                 }
             }
         }
     }
     
-    //MARK: - upload/download Products
     
-    func getProducts() {
-        
-        let productPath = "products/"
-        
-        self.kindOfData = .product
-        
-        getData(path: productPath)
-                
-    }
-    
-    func editProduct(product : Product) {
-        
-        if DataService.shared.currentUser == nil {
-            //need authenticate
-            return
-        }
-        
-        if product.id == nil {
-            guard let id = ref.child("products/").childByAutoId().key  else {return}
-            product.id = id
-        }
-        let productRef = "products/\(product.id!)/"
-        
-        let updates : [AnyHashable : Any] = [productRef + "name" : (product.name ?? "unknown"),
-                                             productRef + "description" : product.productDescription ?? "",
-                       productRef + "category" : (product.category ?? "unknown"),
-                       productRef + "owner" : DataService.shared.currentUser!.uid]
-        ref.updateChildValues(updates)
-        
-        if let image = product.image {
-            uploadImage(image: image, ref: "productImages/" + product.id! + ".jpeg", owner: product)
-        }
-    }
-    
-    func deleteProduct(product : Product, vcForAlert : UIViewController) {
-        
-        //let delete only if there are not chats with product
-        
-        DispatchQueue.global(qos: .userInitiated).async {[weak self] in
-            
-            var noChat = true
-                
-            if noChat, let productId = product.id {
-                    self?.ref.child("products").child(productId).removeValue()
-                } else {
-                    self?.alertDelegate?.showAlert(message: "Forbidden delete product which has been used in chats")
-                }
-            }
-    }
+    //MARK: - user
+    //func userFromUID(uid: String) -> User {
+       // return User()
+    //}
     
 }
 
-protocol FireDataBaseDelegate : AnyObject {
-    func DataGotten(kind : kindData, data: [Dictionary<String, Any>]) 
-}
-
-protocol FireDataBaseAlertDelegate : UIViewController {
-    func showAlert(message : String)
-}
