@@ -104,4 +104,8 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
     }
     
+    @IBAction func logOutAction(_ sender: UIBarButtonItem) {
+        coordinator?.showLogOut(in: self)
+    }
+    
 }

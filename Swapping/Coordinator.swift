@@ -18,8 +18,11 @@ final class Coordinator: IPerRequest {
     }
     
     func start()->UIViewController? {
-        let vc = getVC(id: "startVCId")
-        return vc
+        if let vc = getVC(id: "startVCId") as? StartViewController {
+            vc.model = container.resolve(args: ())
+            return vc
+        }
+        return nil
     }
     
     func getVC(id: String) -> UIViewController? {
@@ -32,15 +35,14 @@ final class Coordinator: IPerRequest {
         return vc
     }
     
-    func presentVC(newOne: UIViewController, oldOne: UIViewController) {
+    func presentVC(newOne: UIViewController, oldOne: UIViewController, inRoot: Bool = false) {
         newOne.modalPresentationStyle = .fullScreen
         
-        if let navigationController = oldOne.navigationController {
-            navigationController.pushViewController(newOne, animated: true)
+        if inRoot, let window = oldOne.view.window {
+            window.rootViewController = newOne
         } else {
-            
-            if let window = oldOne.view.window {
-                window.rootViewController = newOne
+            if let navigationController = oldOne.navigationController {
+                navigationController.pushViewController(newOne, animated: true)
             } else {
                 oldOne.present(newOne, animated: true)
             }
@@ -82,13 +84,15 @@ final class Coordinator: IPerRequest {
                     }
                 }
             }
-            presentVC(newOne: tabBar, oldOne: vc)
+            presentVC(newOne: tabBar, oldOne: vc, inRoot: true)
         }
     }
     
     func showStartVC(in vc: UIViewController) {
         if let startVC = getVC(id: "startVCId") as? StartViewController {
-            presentVC(newOne: startVC, oldOne: vc)
+            startVC.model = container.resolve(args: ())
+            startVC.authStarted = true
+            presentVC(newOne: startVC, oldOne: vc, inRoot: true)
         }
     }
     
@@ -129,6 +133,13 @@ final class Coordinator: IPerRequest {
         if let productVC = getVC(id: "ProductDialogueId") as? ProductChooseViewController {
             productVC.product = product
             presentVC(newOne: productVC, oldOne: vc)
+        }
+    }
+    
+    func showLogOut(in vc: UIViewController) {
+        if let logoutVC = getVC(id: "logOutViewId") as? LogoutVC {
+            logoutVC.model = container.resolve(args: ())
+            presentVC(newOne: logoutVC, oldOne: vc)
         }
     }
     

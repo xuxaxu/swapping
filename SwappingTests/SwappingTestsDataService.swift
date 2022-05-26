@@ -12,12 +12,15 @@ import XCTest
 class SwappingTestsDataService: XCTestCase {
     
     
-    var sut: DataService<DataObject>?
+    var sut: Swapping.Category?
+    
+    var sutProduct: Product?
 
     override func setUpWithError() throws {
         try super.setUpWithError()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        sut = DataService(container: Container(), args: DataObject.self)
+        sut = Category()
+        sutProduct = Product(name: "product1", category: "clothe", image: nil, features: nil, description: "description of product")
     }
 
     override func tearDownWithError() throws {
@@ -26,13 +29,13 @@ class SwappingTestsDataService: XCTestCase {
         try super.tearDownWithError()
     }
 
-    func testJsonCategoryGotten() throws {
+    func testJsonCategoryDecode() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         // Any test you write for XCTest can be annotated as throws and async.
         // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
         // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        let _ : [String: Any] = [
+        let dictJson : [String: Any] = [
                   "image_url": "https://firebasestorage.googleapis.com:443/v0/b/swappingapp-c409e.appspot.com/o/systemImages%2Fclothe.jpeg?alt=media&token=56c9a7e9-703d-4d53-8955-18c1c405bf30",
                   "men": [
                     "image_url": "https://firebasestorage.googleapis.com:443/v0/b/swappingapp-c409e.appspot.com/o/systemImages%2Fmen.jpeg?alt=media&token=f923f349-f4f6-4b02-8055-38686b559e6f",
@@ -45,26 +48,15 @@ class SwappingTestsDataService: XCTestCase {
                     "name": "women"
                   ]
         ]
+        let jsonData = try JSONSerialization.data(withJSONObject: dictJson)
         
-        let promise = expectation(description: "categories decoded")
+        let object = try? JSONDecoder().decode(Category.self, from: jsonData)
         
-        var objectExample = DataObject()
-        sut?.getData(ref: "categories/") { arrayOfObjects in
-            for object in arrayOfObjects {
-                if object.name == "clothe" {
-                    objectExample = object
-                    promise.fulfill()
-                    break
-                }
-            }
-        }
+        XCTAssertNotNil(object)
         
-        wait(for: [promise], timeout: 50)
+        sut?.name = "clothe"
         
-        let category = DataObject()
-        category.name = "clothe"
-        
-       XCTAssertEqual(objectExample, category)
+       XCTAssertEqual(object, sut)
     }
     
     func testJsonProductGotten() throws {
@@ -74,28 +66,21 @@ class SwappingTestsDataService: XCTestCase {
                   "name": "product1",
                   "description":  "description of product"
         ]
-        let data = try JSONSerialization.data(withJSONObject: json)
-        //sut?.jsonGotten(data: data, id: "111", kind: .product)
         
-        let product = Product(name: "product1", category: "clothe", image: nil, features: nil, description: "description of product")
-        product.id = "111"
+        let jsonData = try JSONSerialization.data(withJSONObject: json)
         
-       // XCTAssertEqual(sut?.products, [product])
+        let object = try? JSONDecoder().decode(Product.self, from: jsonData)
+        object?.id = "111"
+        
+        XCTAssertNotNil(object)
+        
+        sutProduct?.id = "111"
+        
+       XCTAssertEqual(sutProduct, object)
+        XCTAssertEqual(object?.category, "clothe")
+        XCTAssertEqual(object?.name, "product1")
+        XCTAssertEqual(object?.productDescription, "description of product")
 
-    }
-    
-    func testGetRootCategories() {
-        //let promise = expectation(description: "getting categories from firebase")
-        sut?.getCategories(in: nil)
-        
-       // XCTAssertGreaterThan(sut!.categories.count, 1)
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
     }
 
 }

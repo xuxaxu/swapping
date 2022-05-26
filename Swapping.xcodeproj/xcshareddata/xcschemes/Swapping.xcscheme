@@ -49,6 +49,16 @@
                ReferencedContainer = "container:Swapping.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C92D15AB2836468400BD172C"
+               BuildableName = "SwappingTestsDataService.xctest"
+               BlueprintName = "SwappingTestsDataService"
+               ReferencedContainer = "container:Swapping.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -152,5 +152,10 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
         }
     }
     
+    @IBAction func logOutAction(_ sender: UIBarButtonItem) {
+        coordinator?.showLogOut(in: self)
+    }
+    
+    
 }
 

@@ -18,22 +18,29 @@ class SwappingTests: XCTestCase {
     
     var sutDataBase : FireDataBase?
     
+    var sutAuth: SwappingAuth?
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         try super.setUpWithError()
         sut = imageWork()
         
         sutDataBase = FireDataBase(container: Container(), args: ())
+        
+        sutAuth = SwappingAuth()
     }
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         sut = nil
         sutDataBase = nil
+        sutAuth = nil
         try super.tearDownWithError()
     }
 
-    func testExample() throws {
+    //MARK: - testing work with images
+    
+    func testAdjuctImageView() throws {
          
         //given
         var size = UIImageView(image: UIImage(named: "launch"))
@@ -47,6 +54,8 @@ class SwappingTests: XCTestCase {
         XCTAssertEqual(min(height.constant,width.constant), 250, "constraints adjust wrong")
     }
     
+    //MARK: - test firebase connection and data
+    
     func testAppUrls() throws {
         
         let _ = Database.database(url: "https://swappingapp-c409e-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -55,12 +64,16 @@ class SwappingTests: XCTestCase {
         
     }
     
+    //in database must by categories
     func testFireDataBaseGetDataForCategories() {
         let promise = expectation(description: "categories recieved")
         
         var categoriesCount = 0
         var nameOfFirstCategory: String?
-        sutDataBase?.getData(path: "categories/") {dict  in
+        sutDataBase?.getData(path: "categories/") {dict, error  in
+            
+            XCTAssertNotNil(error)
+            
             categoriesCount = dict.count
             
             for (_, value) in dict {
@@ -76,6 +89,7 @@ class SwappingTests: XCTestCase {
         XCTAssertNotNil(nameOfFirstCategory)
     }
     
+    //we hope that there is at least one product in database
     func testFireDataBaseGetDataForProducts() {
         let promise = expectation(description: "products recieved")
     
@@ -83,7 +97,10 @@ class SwappingTests: XCTestCase {
         var nameOfFirstProduct: String?
         var categoryOfFirstProduct: String?
         
-        sutDataBase?.getData(path: "products/"){dict in
+        sutDataBase?.getData(path: "products/"){dict, error in
+            
+            XCTAssertNotNil(error)
+            
             productsCount = dict.count
             
             for object in dict.values {
@@ -106,7 +123,8 @@ class SwappingTests: XCTestCase {
         // This is an example of a performance test case.
         measure(metrics: [XCTClockMetric(), XCTCPUMetric(), XCTStorageMetric(), XCTMemoryMetric()]) {
             // Put the code you want to measure the time of here.
-            sutDataBase?.getData(path: "products", complition: { dict in
+            sutDataBase?.getData(path: "products", complition: { dict, error in
+                XCTAssertNotNil(error)
                 for object in dict.values {
                     if let _ = try? JSONDecoder().decode(Product.self, from: object) {
                         
@@ -116,5 +134,26 @@ class SwappingTests: XCTestCase {
         }
     }
     
+    //MARK: - saving credentials
+    func testSaving() {
+        let testLogin = "ksukor@mail.ru"
+        let testPassword = "123456"
+        
+        sutAuth?.saveCredentials(login: testLogin, password: testPassword)
+        
+        let saved = sutAuth?.getLastEntryCredentials()
+        
+        XCTAssertEqual(saved?.login, testLogin)
+        XCTAssertEqual(saved?.password, testPassword)
+    }
+    
+    func testAuthentication() {
+        let testLogin = "ksukor@mail.ru"
+        let testPassword = "123456"
+        
+        sutAuth?.authenticate(login: testLogin, password: testPassword)
+        
+        XCTFail()
+    }
 
 }

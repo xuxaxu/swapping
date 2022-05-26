@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		01B54ACEA4E83D4907AFF4CC /* Pods_SwappingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D23F58B959ECE35C1A16FDBE /* Pods_SwappingTests.framework */; };
+		5D4E5B9C5BE6FFFDCA08062C /* Pods_SwappingTestsDataService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03B07F66DEFE09E7DE028C1E /* Pods_SwappingTestsDataService.framework */; };
 		C91CF1A0281BB36300C5CFB8 /* CategorySectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF19E281BB36300C5CFB8 /* CategorySectionTableViewCell.swift */; };
 		C91CF1A1281BB36300C5CFB8 /* CategorySectionTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C91CF19F281BB36300C5CFB8 /* CategorySectionTableViewCell.xib */; };
 		C91CF1A3281EDDF900C5CFB8 /* ProductCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */; };
 		C91CF1A7281EDF2B00C5CFB8 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */; };
 		C91CF1A9281EE36100C5CFB8 /* EditProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */; };
+		C92D15AF2836468400BD172C /* SwappingTestsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92D15AE2836468400BD172C /* SwappingTestsDataService.swift */; };
+		C92D15B82837C89500BD172C /* LogoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92D15B72837C89500BD172C /* LogoutVC.swift */; };
 		C944908A2822A340007D9CBD /* imageWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94490892822A340007D9CBD /* imageWork.swift */; };
 		C944909228239A0D007D9CBD /* SwappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C944909128239A0D007D9CBD /* SwappingTests.swift */; };
 		C953F0B7280EE04100EDF49C /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = C953F0B6280EE04100EDF49C /* Product.swift */; };
@@ -48,6 +51,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		C92D15B02836468400BD172C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C994BDCC280D98CD00D4AF9F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C994BDD3280D98CD00D4AF9F;
+			remoteInfo = Swapping;
+		};
 		C944909328239A0D007D9CBD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C994BDCC280D98CD00D4AF9F /* Project object */;
@@ -65,8 +75,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		03B07F66DEFE09E7DE028C1E /* Pods_SwappingTestsDataService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwappingTestsDataService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0ACCFAEFF9CD26B413E0EF70 /* Pods-SwappingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwappingTests.debug.xcconfig"; path = "Target Support Files/Pods-SwappingTests/Pods-SwappingTests.debug.xcconfig"; sourceTree = "<group>"; };
+		0DA5133E8E19921EF3DEBDD9 /* Pods-SwappingTestsDataService.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwappingTestsDataService.release.xcconfig"; path = "Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService.release.xcconfig"; sourceTree = "<group>"; };
 		0DA918DBB770E71C34DAEED5 /* Pods-Swapping.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swapping.debug.xcconfig"; path = "Target Support Files/Pods-Swapping/Pods-Swapping.debug.xcconfig"; sourceTree = "<group>"; };
+		4BAB4D6586F07CB2725CA0DE /* Pods-SwappingTestsDataService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwappingTestsDataService.debug.xcconfig"; path = "Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService.debug.xcconfig"; sourceTree = "<group>"; };
 		AE64C9414726353EC3E08C96 /* Pods_Swapping.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Swapping.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEBAC420A42C25C1BD24F61E /* Pods-SwappingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SwappingTests.release.xcconfig"; path = "Target Support Files/Pods-SwappingTests/Pods-SwappingTests.release.xcconfig"; sourceTree = "<group>"; };
 		C91CF19E281BB36300C5CFB8 /* CategorySectionTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySectionTableViewCell.swift; sourceTree = "<group>"; };
@@ -74,6 +87,9 @@
 		C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCollectionViewCell.swift; sourceTree = "<group>"; };
 		C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
 		C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProductViewController.swift; sourceTree = "<group>"; };
+		C92D15AC2836468400BD172C /* SwappingTestsDataService.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwappingTestsDataService.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C92D15AE2836468400BD172C /* SwappingTestsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingTestsDataService.swift; sourceTree = "<group>"; };
+		C92D15B72837C89500BD172C /* LogoutVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutVC.swift; sourceTree = "<group>"; };
 		C94490892822A340007D9CBD /* imageWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageWork.swift; sourceTree = "<group>"; };
 		C944908F28239A0D007D9CBD /* SwappingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwappingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C944909128239A0D007D9CBD /* SwappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingTests.swift; sourceTree = "<group>"; };
@@ -114,6 +130,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C92D15A92836468400BD172C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D4E5B9C5BE6FFFDCA08062C /* Pods_SwappingTestsDataService.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C944908C28239A0D007D9CBD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -145,6 +169,7 @@
 			children = (
 				AE64C9414726353EC3E08C96 /* Pods_Swapping.framework */,
 				D23F58B959ECE35C1A16FDBE /* Pods_SwappingTests.framework */,
+				03B07F66DEFE09E7DE028C1E /* Pods_SwappingTestsDataService.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -156,6 +181,8 @@
 				CEA4DE286739947B2F6E3C21 /* Pods-Swapping.release.xcconfig */,
 				0ACCFAEFF9CD26B413E0EF70 /* Pods-SwappingTests.debug.xcconfig */,
 				AEBAC420A42C25C1BD24F61E /* Pods-SwappingTests.release.xcconfig */,
+				4BAB4D6586F07CB2725CA0DE /* Pods-SwappingTestsDataService.debug.xcconfig */,
+				0DA5133E8E19921EF3DEBDD9 /* Pods-SwappingTestsDataService.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -184,6 +211,32 @@
 			path = Product;
 			sourceTree = "<group>";
 		};
+		C92D15AD2836468400BD172C /* SwappingTestsDataService */ = {
+			isa = PBXGroup;
+			children = (
+				C92D15AE2836468400BD172C /* SwappingTestsDataService.swift */,
+			);
+			path = SwappingTestsDataService;
+			sourceTree = "<group>";
+		};
+		C92D15B528376F1F00BD172C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C9A699CE282BC6AE00C5A37B /* ProductEditVM.swift */,
+				C9A699C1282A55AA00C5A37B /* ProductListVM.swift */,
+			);
+			path = Products;
+			sourceTree = "<group>";
+		};
+		C92D15B628376F2F00BD172C /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				C9A699C3282A92CB00C5A37B /* CategoryListVM.swift */,
+				C9A699D0282E94E400C5A37B /* CategoryVM.swift */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
 		C944909028239A0D007D9CBD /* SwappingTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,10 +250,10 @@
 			isa = PBXGroup;
 			children = (
 				C953F0C32812E71000EDF49C /* StartViewController.swift */,
-				C973A124280DBCF6008BCDF2 /* SwappingAuth.swift */,
 				C91CF1A5281EDF0000C5CFB8 /* Product */,
 				C91CF1A4281EDED400C5CFB8 /* Category */,
 				C994BDDD280D98CD00D4AF9F /* Main.storyboard */,
+				C92D15B72837C89500BD172C /* LogoutVC.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -231,6 +284,7 @@
 				C994BDD6280D98CD00D4AF9F /* Swapping */,
 				C944909028239A0D007D9CBD /* SwappingTests */,
 				C9A699B32827F98F00C5A37B /* SwappingUITests */,
+				C92D15AD2836468400BD172C /* SwappingTestsDataService */,
 				C994BDD5280D98CD00D4AF9F /* Products */,
 				48405BF594D3399B5F6F485A /* Pods */,
 				1E84ACFCE9ABAD4BD7C71F57 /* Frameworks */,
@@ -243,6 +297,7 @@
 				C994BDD4280D98CD00D4AF9F /* Swapping.app */,
 				C944908F28239A0D007D9CBD /* SwappingTests.xctest */,
 				C9A699B22827F98F00C5A37B /* SwappingUITests.xctest */,
+				C92D15AC2836468400BD172C /* SwappingTestsDataService.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -287,10 +342,9 @@
 		C9A699C6282BA84D00C5A37B /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				C9A699C1282A55AA00C5A37B /* ProductListVM.swift */,
-				C9A699C3282A92CB00C5A37B /* CategoryListVM.swift */,
-				C9A699CE282BC6AE00C5A37B /* ProductEditVM.swift */,
-				C9A699D0282E94E400C5A37B /* CategoryVM.swift */,
+				C92D15B628376F2F00BD172C /* Categories */,
+				C92D15B528376F1F00BD172C /* Products */,
+				C973A124280DBCF6008BCDF2 /* SwappingAuth.swift */,
 				C9A699CB282BA9FB00C5A37B /* Bindings */,
 			);
 			path = ViewModels;
@@ -307,6 +361,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C92D15AB2836468400BD172C /* SwappingTestsDataService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C92D15B42836468400BD172C /* Build configuration list for PBXNativeTarget "SwappingTestsDataService" */;
+			buildPhases = (
+				989A82F6611F75740A51E7EE /* [CP] Check Pods Manifest.lock */,
+				C92D15A82836468400BD172C /* Sources */,
+				C92D15A92836468400BD172C /* Frameworks */,
+				C92D15AA2836468400BD172C /* Resources */,
+				A3609910C42873C07E83CD1F /* [CP] Embed Pods Frameworks */,
+				E77A4081B1E637D2F736675F /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C92D15B12836468400BD172C /* PBXTargetDependency */,
+			);
+			name = SwappingTestsDataService;
+			productName = SwappingTestsDataService;
+			productReference = C92D15AC2836468400BD172C /* SwappingTestsDataService.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C944908E28239A0D007D9CBD /* SwappingTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C944909528239A0D007D9CBD /* Build configuration list for PBXNativeTarget "SwappingTests" */;
@@ -373,9 +448,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1330;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1330;
 				TargetAttributes = {
+					C92D15AB2836468400BD172C = {
+						CreatedOnToolsVersion = 13.4;
+						TestTargetID = C994BDD3280D98CD00D4AF9F;
+					};
 					C944908E28239A0D007D9CBD = {
 						CreatedOnToolsVersion = 13.3.1;
 						TestTargetID = C994BDD3280D98CD00D4AF9F;
@@ -405,11 +484,19 @@
 				C994BDD3280D98CD00D4AF9F /* Swapping */,
 				C944908E28239A0D007D9CBD /* SwappingTests */,
 				C9A699B12827F98F00C5A37B /* SwappingUITests */,
+				C92D15AB2836468400BD172C /* SwappingTestsDataService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		C92D15AA2836468400BD172C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C944908D28239A0D007D9CBD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -496,6 +583,28 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwappingTests/Pods-SwappingTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		989A82F6611F75740A51E7EE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SwappingTestsDataService-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		990C113B3F7817B96EE1C9EC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -516,6 +625,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A3609910C42873C07E83CD1F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A94DF3B096536CDBE5C66DFC /* [CP] Copy Pods Resources */ = {
@@ -552,9 +678,34 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Swapping/Pods-Swapping-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E77A4081B1E637D2F736675F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SwappingTestsDataService/Pods-SwappingTestsDataService-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C92D15A82836468400BD172C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C92D15AF2836468400BD172C /* SwappingTestsDataService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C944908B28239A0D007D9CBD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -576,6 +727,7 @@
 				C9A699BE282A41E600C5A37B /* Container.swift in Sources */,
 				C944908A2822A340007D9CBD /* imageWork.swift in Sources */,
 				C91CF1A7281EDF2B00C5CFB8 /* ProductViewController.swift in Sources */,
+				C92D15B82837C89500BD172C /* LogoutVC.swift in Sources */,
 				C953F0B92811392300EDF49C /* FirebaseNetwork.swift in Sources */,
 				C994BDDC280D98CD00D4AF9F /* CatalogVC.swift in Sources */,
 				C953F0B7280EE04100EDF49C /* Product.swift in Sources */,
@@ -609,6 +761,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		C92D15B12836468400BD172C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C994BDD3280D98CD00D4AF9F /* Swapping */;
+			targetProxy = C92D15B02836468400BD172C /* PBXContainerItemProxy */;
+		};
 		C944909428239A0D007D9CBD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C994BDD3280D98CD00D4AF9F /* Swapping */;
@@ -641,6 +798,46 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		C92D15B22836468400BD172C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4BAB4D6586F07CB2725CA0DE /* Pods-SwappingTestsDataService.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GQ7L7Q6ZY5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = XXX.SwappingTestsDataService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swapping.app/Swapping";
+			};
+			name = Debug;
+		};
+		C92D15B32836468400BD172C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0DA5133E8E19921EF3DEBDD9 /* Pods-SwappingTestsDataService.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = GQ7L7Q6ZY5;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = XXX.SwappingTestsDataService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Swapping.app/Swapping";
+			};
+			name = Release;
+		};
 		C944909628239A0D007D9CBD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0ACCFAEFF9CD26B413E0EF70 /* Pods-SwappingTests.debug.xcconfig */;
@@ -891,6 +1088,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C92D15B42836468400BD172C /* Build configuration list for PBXNativeTarget "SwappingTestsDataService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C92D15B22836468400BD172C /* Debug */,
+				C92D15B32836468400BD172C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C944909528239A0D007D9CBD /* Build configuration list for PBXNativeTarget "SwappingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
