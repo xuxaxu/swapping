@@ -131,7 +131,7 @@ final class Coordinator: IPerRequest {
     func showProductDialogue(product: Product, in vc: UIViewController) {
         
         if let productVC = getVC(id: "ProductDialogueId") as? ProductChooseViewController {
-            productVC.product = product
+            productVC.model = container.resolve(args: product) 
             presentVC(newOne: productVC, oldOne: vc)
         }
     }

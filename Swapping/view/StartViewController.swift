@@ -20,6 +20,8 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
     
     @IBOutlet weak var passwordTextField: UITextField!
     
+    @IBOutlet weak var nameTextField: UITextField!
+    
     private var saveCredential = true
     
     @IBOutlet weak var saveCredentialsBtn: UIButton!
@@ -106,7 +108,13 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
     }
     
     @IBAction func signUpAction(_ sender: UIButton) {
-        model.signUp(login: loginTextField.text ?? "", password: passwordTextField.text ?? "", save: saveCredential)
+        if let name = nameTextField.text,
+            let email = loginTextField.text,
+           let password = passwordTextField.text {
+        model.signUp(login: email, password: password, name: name, save: saveCredential)
+        } else {
+            coordinator?.showAlert(message: "fullfill all fields", in: self)
+        }
     }
     
 }

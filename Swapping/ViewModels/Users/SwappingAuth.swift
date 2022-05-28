@@ -17,6 +17,9 @@ import KeychainAccess
 class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
     
     required init(container: IContainer, args: ()) {
+        
+        dataService = container.resolve(args: UserData.self)
+
         super.init()
         
         let _ = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
@@ -28,7 +31,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
     
     var errorMessage = Dynamic("")
     
-    
+    private var dataService: DataService<UserData>
     
     func checkSavedCredentials() {
         do {
@@ -42,8 +45,6 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
                          provider: credentials.provider)
         }
     }
-    
-    
     
     private func saveCredentials(login: String, password: String, provider: Providers = .mail) {
         
@@ -89,6 +90,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
                 strongSelf.saveCredentials(login: login, password: password)
             }
         }
+        
     }
     
     private func authStateDidChanged(auth: Auth, user: User?) {
@@ -104,18 +106,35 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
             try Auth.auth().signOut()
         }
         catch {
-            errorMessage.value = "error with loging out"
+            errorMessage.value = "error with logging out"
         }
     }
     
-    func signUp(login: String, password: String, save: Bool) {
+    func signUp(login: String, password: String, name: String, save: Bool) {
         Auth.auth().createUser(withEmail: login, password: password) { [weak self, login, password] authResult, error in
             if error != nil {
                 self?.errorMessage.value = error!.localizedDescription
             }
-            if authResult != nil, save {
-                self?.saveCredentials(login: login, password: password)
+            if authResult != nil {
+                
+                let changeRequest = authResult!.user.createProfileChangeRequest()
+                changeRequest.displayName = name
+                changeRequest.commitChanges { [weak self] error in
+                    if error != nil {
+                        self?.errorMessage.value = error!.localizedDescription
+                    }
+                }
+                
+                let newUser = UserData(uid: authResult!.user.uid,
+                                       name: name,
+                                       image: nil)
+                self?.dataService.editObject(object: newUser, newName: name)
+                
+                if save {
+                    self?.saveCredentials(login: login, password: password)
+                }
             }
+            
         }
     }
     
@@ -154,6 +173,10 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
                 self.authenticated.value = false
             }
         }
+    }
+    
+    func getUserUid() -> String? {
+        return Auth.auth().currentUser?.uid
     }
     
     enum Providers {

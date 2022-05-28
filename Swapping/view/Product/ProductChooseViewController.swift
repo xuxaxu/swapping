@@ -7,7 +7,11 @@
 
 import UIKit
 
-class ProductChooseViewController: UIViewController {
+class ProductChooseViewController: UIViewController, CoordinatedVC {
+    
+    var coordinator: Coordinator?
+    
+    var model: ProductVM!
     
     @IBOutlet weak var categoryLabelView: UILabel!
     
@@ -20,25 +24,40 @@ class ProductChooseViewController: UIViewController {
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var owner: UILabel!
-    
-    var product: Product?
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if product != nil {
-            categoryLabelView.text = product!.category
-            productLabelView.text = product!.name
-            descriptionLabelView.text = product!.productDescription
-            if let image = product!.image {
+        categoryLabelView.text = model.product.category
+        productLabelView.text = model.product.name
+        descriptionLabelView.text = model.product.productDescription
+        if let image = model.product.image {
                 productImageView.image = image
                 imageWork.adjustImageView(imageView: &productImageView, widthConstraint: &widthConstraint, heightConstraint: &heightConstraint)
-            }
-            //owner.text = product!.owner
+        }
+        
+        bindViewModel()
+        
+        model.getNameOfOwner()
+        model.getParentCategory()
+    }
+    
+    private func bindViewModel() {
+        
+        model.errorMessage.bind { [weak self] message in
+            self?.coordinator?.showAlert(message: message, in: self!)
+        }
+        
+        model.ownerName.bind { [weak self] name in
+            self?.owner.text = name
+        }
+        
+        model.parentCategory.bind { [weak self] parent in
+            self?.categoryLabelView.text = parent
         }
     }
     
-
     /*
     // MARK: - Navigation
 

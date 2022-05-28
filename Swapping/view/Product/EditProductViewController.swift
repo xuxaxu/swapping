@@ -83,7 +83,7 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
             
         case 0: return filteredTopLevelCategories.count //DataService.shared.topLevelCategories.count
             
-        case 1: //if let count = DataService.shared.allCategories[DataService.shared.topLevelCategories[pickerView.selectedRow(inComponent: 0)]]?.count {
+        case 1: 
             let selectedRow = pickerView.selectedRow(inComponent: 0)
             if  selectedRow < filteredTopLevelCategories.count,
                 let count = filteredCategories[filteredTopLevelCategories[selectedRow]]?.count {
@@ -101,7 +101,7 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
         if component == 0 {
             return filteredTopLevelCategories[row] //DataService.shared.topLevelCategories[row]
         } else {
-            //if let arrayCategories = DataService.shared.allCategories[DataService.shared.topLevelCategories[pickerView.selectedRow(inComponent: 0)]],
+            
             if let arrayCategories = filteredCategories[filteredTopLevelCategories[pickerView.selectedRow(inComponent: 0)]],
                 row < arrayCategories.count {
                     return arrayCategories[row]
@@ -122,8 +122,7 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
             }
         } else {
             let selectedTop = pickerView.selectedRow(inComponent: 0)
-              //if selectedTop < DataService.shared.topLevelCategories.count,
-              // let categoryName = DataService.shared.allCategories[DataService.shared.topLevelCategories[selectedTop]]?[row] {
+              
             if selectedTop < filteredTopLevelCategories.count,
                let filteredArray = filteredCategories[filteredTopLevelCategories[selectedTop]],
                row < filteredArray.count {
@@ -190,11 +189,6 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     
     //MARK: - finish editing or creating product
     @IBAction private func done(_ sender: UIButton) {
-        
-        //if DataService.shared.currentUser == nil {
-          //  coordinator.showStartVC(in: self)
-            //SwappingAuth().signInSwap(in: self)
-        //}
         
         guard let name = shortTextView.text, name != "" else {
             shortTextView.backgroundColor = .systemPink

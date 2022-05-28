@@ -51,6 +51,31 @@ class FireDataBase : ISingleton {
             )
     }
     
+    func getPieceOfData(path: String,
+                        complition: @escaping (Data?, Error?)->Void) {
+        
+        ref.child(path).getData(completion: { [complition] error, snapshot in
+            
+            guard error == nil else {
+              print(error!.localizedDescription)
+                complition(nil, error)
+              return
+            }
+        
+            //decode
+            if snapshot.exists(), let value = snapshot.value {
+                 do { let jsonData = try JSONSerialization.data(withJSONObject: value)
+                        complition(jsonData, nil)
+                        return
+                    } catch {
+                        
+                    }
+            }
+            complition(nil, nil)
+        }
+            )
+    }
+    
     //MARK: - upload/download media
     
     func uploadImage(image : UIImage, ref: String, complition: @escaping (URL)->Void) {
@@ -118,11 +143,16 @@ class FireDataBase : ISingleton {
         }
     }
     
-    func createObject(object : DataObject) {
+    //MARK: - editing data
+    func createObject(object : DataObject)->String {
         
         let objectPath = object.getRef()
         
-        ref.child(objectPath + "/name").setValue(object.name)
+        guard let newId = ref.child(objectPath).childByAutoId().key else { return ""}
+        
+        ref.child(objectPath + "/" + newId + "/name").setValue(object.name)
+        
+        return newId
         
     }
     
@@ -175,11 +205,26 @@ class FireDataBase : ISingleton {
         }
     }
     
-    
-    //MARK: - user
-    //func userFromUID(uid: String) -> User {
-       // return User()
-    //}
+    //MARK: - query to db
+    func findPathOfElement(path: String,
+                           key: String,
+                           value: String,
+                           complition: @escaping (String?)->Void) {
+        
+        let query = ref.child(path).queryEqual(toValue: value, childKey: key)
+        query.getData { [complition] error, snapshot in
+            if error != nil {
+                complition(nil)
+                return
+            }
+            
+            if snapshot.exists() {
+                
+            }
+        }
+        
+    }
     
 }
+    
 

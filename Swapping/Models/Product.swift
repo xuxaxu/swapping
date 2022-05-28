@@ -12,14 +12,12 @@ class Product : DataObject {
     
     var category : String?
     var features : Dictionary<Feature, Any>?
-    var owner : User?
+    var owner : String?
     var productDescription: String?
     
     convenience init(name : String, category : String, image : UIImage?, features : Dictionary<Feature, Any>?, description : String?) {
         self.init()
-        //if let owner = DataService.shared.currentUser {
-           // self.owner = owner
-        //}
+        
             self.name = name
             self.category = category
             self.image = image
@@ -32,6 +30,7 @@ class Product : DataObject {
         case productDescription = "description"
         case imgUrl = "image_url"
         case category
+        case owner
     }
     
     convenience required init(from decoder: Decoder) throws {
@@ -42,6 +41,7 @@ class Product : DataObject {
         self.productDescription = try container.decodeIfPresent(String.self, forKey: .productDescription)
         self.imgUrl = try container.decodeIfPresent(URL.self, forKey: .imgUrl)
         self.category = try container.decodeIfPresent(String.self, forKey: .category)
+        self.owner = try container.decodeIfPresent(String.self, forKey: .owner)
     }
     
     class func primaryKey() -> String? {
@@ -53,9 +53,11 @@ class Product : DataObject {
     }
     
     override func getRef() -> String {
-        return "products/" + (id ?? "unknown")
+        if let identifier = id {
+            return "products/" + identifier
+        } else {
+            return "products"
+        }
     }
 }
-
-
 

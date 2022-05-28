@@ -25,6 +25,7 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     
     var errorMessage = Dynamic("")
     
+    
     required init(container: IContainer, args: T.Type) {
         fireDataBase = FireDataBase(container: container, args: ())
         image = Dynamic(T.init())
@@ -95,15 +96,58 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
         
     func createObject(object : T) {
             
-        fireDataBase.createObject(object: object)
+        let newId = fireDataBase.createObject(object: object)
+        
+        if newId != "" {
+            
+            object.id = newId
             
             if let image = object.image {
                 uploadImage(image: image, owner: object)
             }
+            
+        } else {
+            
+            errorMessage.value = "can't create object"
+            
+        }
     }
     
     func deleteObject(object: T, complition: @escaping (String)-> Void) {
         fireDataBase.deleteObject(object: object, complition: complition)
+    }
+    
+    func getElement(path: String, withImage : Bool = false, complition: @escaping (T)->Void) {
+        
+        fireDataBase.getPieceOfData(path: path) { [weak self, complition, withImage] data, error in
+            
+            guard error == nil else {
+                self?.errorMessage.value = error!.localizedDescription
+                return
+            }
+            
+            if let jsonData = data,
+                let object = try? JSONDecoder().decode(T.self, from: jsonData) {
+                
+                if withImage, let imgUrl = object.imgUrl {
+                    self?.fireDataBase.downloadImage(path: imgUrl, complition: { [object] image in
+                        object.image = image
+                        
+                        self?.image.value = object
+                    })
+                }
+                complition(object)
+            }
+        }
+            
+    }
+    
+    func editObject(object: T, newName: String) {
+        let values = ["name" : newName]
+        
+        fireDataBase.editObject(object: object, stringValues: values, complition: { [weak self, object] url in
+                self?.setUrlInObject(url: url, object: object)
+        })
     }
     
     //MARK: - work with Category
@@ -126,21 +170,19 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
         }
     }
     
-    func editCategory(category: Category, newName: String) {
-        let values = ["name" : newName]
-        
-        fireDataBase.editObject(object: category, stringValues: values, complition: { [weak self, category] url in
-            if let categoryFromGeneric = category as? T {
-                self?.setUrlInObject(url: url, object: categoryFromGeneric)
-            }
-        })
-    }
-    
     func getChildCategories(inCategory category: Category, topLevelCategory: Category) {
         
         let categoryPath = category.getRef() + "/"
         
         getDataToArrayOfChildren(ref: categoryPath, object: topLevelCategory)
+    }
+    
+    func getParentsOfCategory(name: String) {
+        fireDataBase.findPathOfElement(path: "categories/", key: "name", value: name) { parents in
+            if let strParents = parents {
+                
+            }
+        }
     }
     
     //MARK: work with products
@@ -155,7 +197,7 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
         let values = ["name" : product.name ?? "unknown",
                       "description" : product.productDescription ?? "",
                       "category" : product.category ?? "unknown",
-                      "owner" : product.owner?.uid ?? "unknown"]
+                      "owner" : product.owner ?? "unknown"]
         fireDataBase.editObject(object: product, stringValues: values, complition: { [weak self, product] url in
             if let productFromGeneric = product as? T {
                 self?.setUrlInObject(url: url, object: productFromGeneric)

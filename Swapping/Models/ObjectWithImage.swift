@@ -39,6 +39,7 @@ class DataObject: ObjectWithImage {
     enum CodingKeys: String, CodingKey {
         case name
         case imgUrl = "image_url"
+        case id
     }
     
     convenience required init(from decoder: Decoder) throws {
@@ -47,6 +48,7 @@ class DataObject: ObjectWithImage {
         
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
         self.imgUrl = try container.decodeIfPresent(URL.self, forKey: .imgUrl)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
     }
     
     required init() {
@@ -61,13 +63,4 @@ enum Feature {
     case volume
     case weight
     case material
-}
-
-//which kind of data we'll be work with
-enum kindData {
-    case category
-    case topLevelCategory
-    case product
-    case feature
-    case appUser
 }

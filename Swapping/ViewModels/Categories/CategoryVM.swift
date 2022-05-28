@@ -46,7 +46,7 @@ class CategoryVM : IPerRequest {
             createCategory(name: name, image: image)
         } else {
                 category!.image = image
-                dataService.editCategory(category: category!, newName: name)
+                dataService.editObject(object: category!, newName: name)
         }
     }
     

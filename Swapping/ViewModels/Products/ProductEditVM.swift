@@ -26,9 +26,13 @@ class ProductEditVM : IPerRequest {
     
     var errorMessage = Dynamic("")
     
+    private var userService: SwappingAuth
+    
     required init(container: IContainer, args: Product?) {
         dataService = container.resolve(args: Product.self)
         dataServiceCategories = container.resolve(args: Category.self)
+        userService = container.resolve(args: ())
+        
         product = args
         bindDataService()
     }
@@ -84,6 +88,7 @@ class ProductEditVM : IPerRequest {
             if product != nil {
                 dataService.createObject(object: product!)
             }
+            product?.owner = userService.getUserUid()
         } else {
             product!.name = name
             product!.category = category

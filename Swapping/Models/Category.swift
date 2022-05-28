@@ -11,30 +11,34 @@ import UIKit.UIImage
 class Category : DataObject {
     
     var parent : Category?
+    var parentId : String?
     
     convenience init(name : String, parent : Category?, image : UIImage?) {
         self.init()
         self.name = name
         self.parent = parent
         self.image = image
-        self.id = name
+        self.parentId = parent?.id
     }
     
     override func getRef() -> String {
+        
         if parent == nil {
-            return "categories/" + (name ?? "unknown")
+            return "categories/" + (id ?? "")
         } else {
-            return parent!.getRef() + "/" + (name ?? "unknown")
+            return parent!.getRef() + "/" + (id ?? "")
         }
     }
     
     enum CodingKeys: String, CodingKey {
         case name
         case imgUrl = "image_url"
+        case id
+        case parentId = "parent_id"
     }
     
     static func == (lhs: Category, rhs: Category) -> Bool {
-        return lhs.name == rhs.name
+        return lhs.id == rhs.id
     }
     
     convenience required init(from decoder: Decoder) throws {
@@ -43,10 +47,11 @@ class Category : DataObject {
         
         self.name = try container.decodeIfPresent(String.self, forKey: .name)
         self.imgUrl = try container.decodeIfPresent(URL.self, forKey: .imgUrl)
-        
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.parentId = try container.decodeIfPresent(String.self, forKey: .parentId)
     }
     
     class func primaryKey() -> String? {
-        return "name"
+        return "id"
     }
 }
