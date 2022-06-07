@@ -39,8 +39,9 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
         })
         
         model?.rowChanged.bind({ [weak self] inx in
-            //self?.refreshRow(indexPath: IndexPath(row: inx, section: 1))
-            self?.categoryTableView.reloadRows(at: [IndexPath(row: inx, section: 0)], with: .fade)
+            if let rows = self?.categoryTableView.numberOfRows(inSection: 0), inx < rows  {
+                self?.categoryTableView.reloadRows(at: [IndexPath(row: inx, section: 0)], with: .fade)
+            }
         })
         
         model?.errorMessage.bind({ [weak self] message in

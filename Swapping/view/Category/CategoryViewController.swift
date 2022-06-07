@@ -45,7 +45,16 @@ class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextField
     @IBAction private func done(_ sender: UIButton) {
         if let name = nameTextField.text, name > ""  {
             if let model = model {
-                model.editFinished(name: name, image: imageView.image)
+                
+                var previousVC: ObjectUpdatesSubscriber? = nil
+                if let nc = navigationController?.children,
+                    nc.count>1,
+                    let catalogVC = nc[nc.count-2] as? CatalogVC,
+                   let subscriber = catalogVC.model {
+                    previousVC = subscriber
+                }
+                
+                model.editFinished(name: name, image: imageView.image, previousVC)
             }
         }
         

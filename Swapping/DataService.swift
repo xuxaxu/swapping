@@ -25,47 +25,59 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     
     var errorMessage = Dynamic("")
     
+    var publisher: RefreshPublisher
+    
     
     required init(container: IContainer, args: T.Type) {
         fireDataBase = FireDataBase(container: container, args: ())
         image = Dynamic(T.init())
         arrayOfObjects = Dynamic([T.init()])
+        publisher = container.resolve(args: ())
     }
     
     //MARK: recieving of array of data
-    func getData(ref: String, _ withImages: Bool = true, complition: @escaping ([T])->Void) {
     
-            fireDataBase.getData(path: ref) { [weak self, complition, withImages] dictData, error in
-                
-                guard error == nil else {
-                    self?.errorMessage.value = error!.localizedDescription
-                    return
-                }
-                
-                var arrayOfData: [T] = []
-                
-                for (key, value) in dictData {
-                    if let object = try? JSONDecoder().decode(T.self, from: value) {
-                            object.id = key
-                            arrayOfData.append(object)
-                        
-                        if withImages, let imgUrl = object.imgUrl {
-                            self?.fireDataBase.downloadImage(path: imgUrl, complition: { [object] image in
-                                object.image = image
-                                
-                                self?.image.value = object
-                            })
+    func recieveData(ref: String, key: String?, value: String?, _ withImages: Bool = true, complition: @escaping ([T])->Void) {
+    
+        DispatchQueue.global(qos: .userInteractive).async {
+            [weak self, ref, key, value, complition] in
+            
+            self?.fireDataBase.recieveData(path: ref, key: key, value: value) {
+                [weak self, complition, withImages] dictData, error in
+                    
+                    guard error == nil else {
+                        self?.errorMessage.value = error!.localizedDescription
+                        return
+                    }
+                    
+                    var arrayOfData: [T] = []
+                    
+                    for (key, value) in dictData {
+                        if let object = try? JSONDecoder().decode(T.self, from: value) {
+                                object.id = key
+                                arrayOfData.append(object)
+                            
+                            if withImages, let imgUrl = object.imgUrl {
+                                self?.fireDataBase.downloadImage(path: imgUrl, complition: { [object] image in
+                                    object.image = image
+                                    
+                                    self?.image.value = object
+                                })
+                            }
                         }
                     }
-                }
                 
                 complition(arrayOfData)
             }
         }
+    }
     
-    func getDataToArrayOfObjects(ref: String, _ withImages: Bool = true) {
-        getData(ref: ref, withImages) { [weak self] objects in
-            
+    func getDataToArrayOfObjects(ref: String,
+                                 key: String? = nil,
+                                 value: String? = nil,
+                                 _ withImages: Bool = true) {
+        recieveData(ref: ref, key: key, value: value, withImages) { [weak self] objects in
+           
             self?.arrayOfObjects.value = objects
             
         }
@@ -90,7 +102,12 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     
     func setUrlInObject(url: URL, object: T) {
         object.imgUrl = url
+        
         fireDataBase.setUrlInObject(url: url, object: object)
+        
+        if let id = object.id {
+            publisher.postUpdates(id: RefreshPublisher.updatedUrl(id: id, url: url))
+        }
     }
     
         
@@ -101,10 +118,6 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
         if newId != "" {
             
             object.id = newId
-            
-            if let image = object.image {
-                uploadImage(image: image, owner: object)
-            }
             
         } else {
             
@@ -154,13 +167,18 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     //get only child categories of argument from FireDB
     func getCategories(in category: Category?, _ withImages: Bool = true) {
         
-        let categoryPath = (category?.getRef() ?? "categories") + "/"
+        let categoryPath = "categories/"
         
-        getDataToArrayOfObjects(ref: categoryPath, withImages)
+        getDataToArrayOfObjects(ref: categoryPath,
+                                key: "parent_id",
+                                value: category?.id ?? "",
+                                withImages)
     }
     
-    func getDataToArrayOfChildren(ref: String, object: Category) {
-        getData(ref: ref, false) { [weak self] objects in
+    func getDataToArrayOfChildren(parent: String, object: Category) {
+        
+        recieveData(ref: "categories", key: "parent_id", value: parent) {
+            [weak self] objects in
             var categories = objects as? [Category]
             if categories == nil {
                 categories = []
@@ -172,18 +190,22 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     
     func getChildCategories(inCategory category: Category, topLevelCategory: Category) {
         
-        let categoryPath = category.getRef() + "/"
-        
-        getDataToArrayOfChildren(ref: categoryPath, object: topLevelCategory)
+        getDataToArrayOfChildren(parent: category.id ?? "", object: topLevelCategory)
     }
     
-    func getParentsOfCategory(name: String) {
-        fireDataBase.findPathOfElement(path: "categories/", key: "name", value: name) { parents in
-            if let strParents = parents {
-                
+    func editCategory(category: Category) {
+        let values = ["name" : category.name ?? "unknown", "parent_id" : category.parentId ?? ""]
+        
+        fireDataBase.editObject(object: category, stringValues: values, complition: { [weak self, category] url in
+            if let categoryToType = category as? T {
+                self?.setUrlInObject(url: url, object: categoryToType)
+                if let id = categoryToType.id, let url = categoryToType.imgUrl {
+                    self?.publisher.postUpdates(id: RefreshPublisher.updatedUrl(id: id, url: url))
+                }
             }
-        }
+        })
     }
+    
     
     //MARK: work with products
     func getProducts() {

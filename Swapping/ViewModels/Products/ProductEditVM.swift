@@ -12,7 +12,6 @@ class ProductEditVM : IPerRequest {
     
     typealias Arguments = Product?
     
-    var topLevelCategories: [Category] = []
     
     var topLevelCategoryNames: Dynamic<[String]> = Dynamic([])
     
@@ -28,10 +27,13 @@ class ProductEditVM : IPerRequest {
     
     private var userService: SwappingAuth
     
+    private var publisher: RefreshPublisher
+    
     required init(container: IContainer, args: Product?) {
         dataService = container.resolve(args: Product.self)
         dataServiceCategories = container.resolve(args: Category.self)
         userService = container.resolve(args: ())
+        publisher = container.resolve(args: ())
         
         product = args
         bindDataService()
@@ -39,7 +41,6 @@ class ProductEditVM : IPerRequest {
     
     func bindDataService() {
         dataServiceCategories.arrayOfObjects.bind({ [weak self] arrayOfObjects in
-                    self?.topLevelCategories = arrayOfObjects
                     self?.topLevelCategoryNames.value = arrayOfObjects.map{ $0.name ?? "" }
                     self?.fillChildCategories(inCategoryArray: arrayOfObjects, parentCategoty: nil)
             })
@@ -96,6 +97,18 @@ class ProductEditVM : IPerRequest {
             product!.image = image
         }
         dataService.editProduct(product: product!)
+    }
+    
+    func subscribeForUpdateProduct(subscriber: ObjectUpdatesSubscriber) {
+        publisher.subscribeforUpdates(some: subscriber)
+    }
+    
+    func deleteProduct() {
+        if let product = product {
+            dataService.deleteObject(object: product) { [weak self] message in
+            self?.errorMessage.value = message
+            }
+        }
     }
     
 }

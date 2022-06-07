@@ -18,39 +18,6 @@ class FireDataBase : ISingleton {
     
     // MARK: - get Data from DB and put it into array of Any
     
-    func getData(path : String, complition: @escaping (Dictionary<String, Data>, Error?)->Void) {
-        
-        ref.child(path).getData(completion: { [complition] error, snapshot in
-            
-            guard error == nil else {
-              print(error!.localizedDescription)
-                complition([:], error)
-              return
-            }
-        
-            //decode
-            var dataRecieved: Dictionary<String, Data> = [:]
-            
-                    for child in snapshot.children {
-                        let childSnapshot = child as! DataSnapshot
-                        if let value = childSnapshot.value {
-                            if let _ = value as? String {
-                                //if need fields of parent element
-                            } else {
-                                do { let jsonData = try JSONSerialization.data(withJSONObject: value)
-                                    dataRecieved[childSnapshot.key] = jsonData
-                                } catch {
-                                    //here fields of upper element
-                                }
-                            }
-                        }
-                    }
-                 complition(dataRecieved, nil)
-                    
-        }
-            )
-    }
-    
     func getPieceOfData(path: String,
                         complition: @escaping (Data?, Error?)->Void) {
         
@@ -160,8 +127,6 @@ class FireDataBase : ISingleton {
         
         let path = object.getRef()+"/"
         
-        //ref.child(path + "name").setValue(object.name)
-        
         var updates : [AnyHashable : Any] = [:]
         for (key, value) in stringValues {
             updates[ path + key] = value
@@ -196,34 +161,77 @@ class FireDataBase : ISingleton {
                     }
                 }
                 if noChild {
+                    //delete image from storage
+                    if let url = object.imgUrl, let child = self?.storageRef.child(url.absoluteString) {
+                        child.delete { error in
+                            if let _ = error {
+                                complition("image of object hasn't deleted")
+                            }
+                        }
+                    }
+                    
                     self?.ref.child(path).removeValue()
                     complition("deletion succeeded")
                 } else {
-                    complition("Forbidden delete category with child categories")
+                    complition("Forbidden delete objects with child objects")
                 }
             }
         }
     }
     
     //MARK: - query to db
-    func findPathOfElement(path: String,
-                           key: String,
-                           value: String,
-                           complition: @escaping (String?)->Void) {
-        
-        let query = ref.child(path).queryEqual(toValue: value, childKey: key)
-        query.getData { [complition] error, snapshot in
-            if error != nil {
-                complition(nil)
-                return
+    func recieveData(path: String,
+                           key: String?,
+                           value: String?,
+                           complition: @escaping (Dictionary<String, Data>, Error?)->Void) {
+
+        if key == nil {
+            
+            ref.child(path).getData { [weak self, complition] error, snapshot in
+                self?.decodeData(error: error, snapshot: snapshot, complition: complition)
             }
             
-            if snapshot.exists() {
-                
+        } else {
+            
+            ref.child(path).queryOrdered(byChild: key!).queryEqual(toValue: value).observeSingleEvent(of: .value) {
+                [weak self, complition] snapshot in
+               
+                self?.decodeData(error: nil, snapshot: snapshot, complition: complition)
             }
         }
         
     }
+    
+    private func decodeData(error: Error?,
+                       snapshot: DataSnapshot,
+                       complition: (Dictionary<String, Data>, Error?)-> Void) {
+        
+           if error != nil {
+               complition([:], error)
+               return
+           }
+           
+           if snapshot.exists() {
+               //decode
+               var dataRecieved: Dictionary<String, Data> = [:]
+               
+                       for child in snapshot.children {
+                           let childSnapshot = child as! DataSnapshot
+                           if let value = childSnapshot.value {
+                               if let _ = value as? String {
+                                   //if need fields of parent element
+                               } else {
+                                   do { let jsonData = try JSONSerialization.data(withJSONObject: value)
+                                       dataRecieved[childSnapshot.key] = jsonData
+                                   } catch {
+                                       //here fields of upper element
+                                   }
+                               }
+                           }
+                       }
+               complition(dataRecieved, nil)
+           }
+       }
     
 }
     

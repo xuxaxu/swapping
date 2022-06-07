@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class ProductListVM: IPerRequest {
+final class ProductListVM: IPerRequest, ObjectUpdatesSubscriber {
     
     private var dataService: DataService<Product>
     
@@ -19,6 +19,17 @@ final class ProductListVM: IPerRequest {
     var productChanged = Dynamic(0)
     
     var errorMessage = Dynamic("")
+    
+    var id: RefreshPublisher.updatedUrl? {
+        didSet {
+            for product in products {
+                if product.id == id?.id {
+                    product.imgUrl = id!.url
+                    dataService.loadImage(owner: product)
+                }
+            }
+        }
+    }
     
     required init(container: IContainer, args: ()) {
         dataService = container.resolve(args: Product.self)

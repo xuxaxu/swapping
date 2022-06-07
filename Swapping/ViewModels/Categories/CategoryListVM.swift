@@ -6,10 +6,13 @@
 //
 
 import Foundation
+import CoreMedia
 
-final class CategoryListVM : IPerRequest {
+final class CategoryListVM : IPerRequest, ObjectUpdatesSubscriber {
+    
     
     typealias Arguments = Category?
+    
     
     private var dataService: DataService<Category>
     
@@ -23,6 +26,18 @@ final class CategoryListVM : IPerRequest {
     
     var errorMessage = Dynamic("")
     
+    var id: RefreshPublisher.updatedUrl? {
+        didSet {
+            for category in categories {
+                if category.id == id?.id {
+                    category.imgUrl = id!.url
+                    dataService.loadImage(owner: category)
+                    return
+                }
+            }
+        }
+    }
+    
     required init(container: IContainer, args: Category?) {
         dataService = container.resolve(args: Category.self)
         parentCategory = args
@@ -31,8 +46,10 @@ final class CategoryListVM : IPerRequest {
     
     func bind() {
         dataService.arrayOfObjects.bind({ [weak self] arrayOfObjects in
-                self?.categories = arrayOfObjects
-                self?.allDataChanged.value = true
+            if let existSelf = self {
+                existSelf.categories = arrayOfObjects
+                existSelf.allDataChanged.value = true
+            }
         })
         
         dataService.image.bind({[weak self] object in
@@ -44,6 +61,7 @@ final class CategoryListVM : IPerRequest {
         dataService.errorMessage.bind { [weak self] message in
             self?.errorMessage.value = message
         }
+        
     }
     
     func getCategories() {

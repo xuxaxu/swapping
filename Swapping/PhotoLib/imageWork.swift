@@ -35,4 +35,13 @@ final class imageWork {
         imageView.layer.cornerRadius = 13
         imageView.setNeedsLayout()
     }
+    
+    static func adjustTextView(textView: inout UITextView, heightConstraint: inout NSLayoutConstraint) {
+        let fixedWidth = textView.frame.size.width
+        let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+        textView.frame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
+        heightConstraint.constant = textView.frame.height
+        
+        textView.setNeedsLayout()
+    }
 }

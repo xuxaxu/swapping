@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Combine
 
 class CategoryVM : IPerRequest {
     
@@ -20,10 +21,13 @@ class CategoryVM : IPerRequest {
     
     var errorMessage = Dynamic("")
     
+    private var publisher: RefreshPublisher
+    
     required init(container: IContainer, args: (Category?, Category?)) {
         dataService = container.resolve(args: Category.self)
         category = args.0
         parentCategory = args.1
+        publisher = container.resolve(args: ())
         
         bindDataService()
     }
@@ -41,12 +45,16 @@ class CategoryVM : IPerRequest {
         }
     }
     
-    func editFinished(name: String, image: UIImage?) {
+    func editFinished(name: String, image: UIImage?, _ subscriber: ObjectUpdatesSubscriber? = nil) {
         if category == nil {
             createCategory(name: name, image: image)
         } else {
                 category!.image = image
-                dataService.editObject(object: category!, newName: name)
+        }
+        dataService.editCategory(category: category!)
+
+        if let subscriber = subscriber {
+            publisher.subscribeforUpdates(some: subscriber)
         }
     }
     

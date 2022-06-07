@@ -18,6 +18,8 @@ class ProductVM: IPerRequest {
         
         dataService = container.resolve(args: Category.self)
         
+        authService = container.resolve(args: ())
+        
         bind()
     }
     
@@ -31,7 +33,11 @@ class ProductVM: IPerRequest {
     
     var parentCategory = Dynamic("")
     
+    var currentUserIsOwner = Dynamic(false)
+    
     var dataService: DataService<Category>
+    
+    var authService: SwappingAuth
     
     func bind() {
         userService.userName.bind { [weak self] name in
@@ -45,17 +51,48 @@ class ProductVM: IPerRequest {
         dataService.errorMessage.bind { [weak self] message in
             self?.errorMessage.value = message
         }
+        
+        dataService.arrayOfObjects.bind { [weak self] categories in
+            if !categories.isEmpty {
+                self?.composePathCategory(model: self, category: categories[0])
+            }
+        }
     }
     
     func getNameOfOwner() {
         if let uid = product.owner {
             userService.getUserName(uid: uid)
+            checkCurrentUserIsOwner()
+        }
+    }
+    
+    private func checkCurrentUserIsOwner() {
+        if let uid = product.owner, let currentUid = authService.getUserUid() {
+            self.currentUserIsOwner.value = (uid == currentUid)
         }
     }
     
     func getParentCategory() {
         if let category = product.category {
-            dataService.getParentsOfCategory(name: category)
+            parentCategory.value = ""
+            dataService.getDataToArrayOfObjects(ref: "categories/", key: "name", value: category, false)
+        }
+    }
+    
+    private func composePathCategory(model: ProductVM?, category: Category?) {
+        if let existSelf = model, let existCategory = category, let name = existCategory.name {
+            
+            if existSelf.parentCategory.value == "" {
+                existSelf.parentCategory.value = name
+            } else {
+                existSelf.parentCategory.value = name + "/" + existSelf.parentCategory.value
+            }
+            
+            if let parent = existCategory.parentId, parent != "" {
+                dataService.getElement(path: "categories/" + parent) { [weak self] category in
+                    self?.composePathCategory(model: self, category: category)
+                }
+            }
         }
     }
 }

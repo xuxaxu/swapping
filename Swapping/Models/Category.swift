@@ -21,13 +21,8 @@ class Category : DataObject {
         self.parentId = parent?.id
     }
     
-    override func getRef() -> String {
-        
-        if parent == nil {
+    override func getRef() -> String {        
             return "categories/" + (id ?? "")
-        } else {
-            return parent!.getRef() + "/" + (id ?? "")
-        }
     }
     
     enum CodingKeys: String, CodingKey {

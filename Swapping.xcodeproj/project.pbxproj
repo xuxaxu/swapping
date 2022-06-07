@@ -16,6 +16,7 @@
 		C91CF1A9281EE36100C5CFB8 /* EditProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */; };
 		C92D15AF2836468400BD172C /* SwappingTestsDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92D15AE2836468400BD172C /* SwappingTestsDataService.swift */; };
 		C92D15B82837C89500BD172C /* LogoutVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C92D15B72837C89500BD172C /* LogoutVC.swift */; };
+		C9302156284DE2EE00A173A6 /* RefreshPublisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9302155284DE2EE00A173A6 /* RefreshPublisher.swift */; };
 		C9333A2428400A5600DA52E5 /* ProductVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A2328400A5600DA52E5 /* ProductVM.swift */; };
 		C9333A262840CC1000DA52E5 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A252840CC1000DA52E5 /* UserData.swift */; };
 		C9333A282840D75500DA52E5 /* UserDataVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A272840D75500DA52E5 /* UserDataVM.swift */; };
@@ -93,6 +94,7 @@
 		C92D15AC2836468400BD172C /* SwappingTestsDataService.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwappingTestsDataService.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C92D15AE2836468400BD172C /* SwappingTestsDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingTestsDataService.swift; sourceTree = "<group>"; };
 		C92D15B72837C89500BD172C /* LogoutVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoutVC.swift; sourceTree = "<group>"; };
+		C9302155284DE2EE00A173A6 /* RefreshPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshPublisher.swift; sourceTree = "<group>"; };
 		C9333A2328400A5600DA52E5 /* ProductVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVM.swift; sourceTree = "<group>"; };
 		C9333A252840CC1000DA52E5 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		C9333A272840D75500DA52E5 /* UserDataVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataVM.swift; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				C9A699CC282BAA2B00C5A37B /* Dynamic.swift */,
+				C9302155284DE2EE00A173A6 /* RefreshPublisher.swift */,
 			);
 			path = Bindings;
 			sourceTree = "<group>";
@@ -748,6 +751,7 @@
 				C953F0B92811392300EDF49C /* FirebaseNetwork.swift in Sources */,
 				C994BDDC280D98CD00D4AF9F /* CatalogVC.swift in Sources */,
 				C953F0B7280EE04100EDF49C /* Product.swift in Sources */,
+				C9302156284DE2EE00A173A6 /* RefreshPublisher.swift in Sources */,
 				C953F0C42812E71000EDF49C /* StartViewController.swift in Sources */,
 				C9A699C4282A92CB00C5A37B /* CategoryListVM.swift in Sources */,
 				C9A699CA282BA8E600C5A37B /* ObjectWithImage.swift in Sources */,

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, PhotoPickerDelegate, CoordinatedVC {
+class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, PhotoPickerDelegate, CoordinatedVC, UITextViewDelegate {
     
     var coordinator: Coordinator?
     
@@ -23,9 +23,17 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
         if let product = model.product {
             shortTextView.text = product.name
             productImageView.image = product.image
-            longTextView.text = product.productDescription
+            descriptionTextView.text = product.productDescription
             categoryTextField.text = product.category
         }
+        
+        if descriptionTextView.text == nil || descriptionTextView.text == "write something about product here" {
+                descriptionTextView.text = "write something about product here"
+                descriptionTextView.textColor = .lightGray
+        } else {
+            descriptionTextView.textColor = .label
+        }
+        descriptionTextView.delegate = self
         
         pickerView.dataSource = self
         pickerView.delegate = self
@@ -62,9 +70,7 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     
     @IBOutlet weak var imgHeightConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var featureTableView: UITableView!
-    
-    @IBOutlet private weak var longTextView: UITextView!
+    @IBOutlet weak var descriptionTextView: UITextView!
     
     //MARK: - choosing category for product, in DataService have topLevelCategories for 1 component of picker and allCategories for 2 picker component
     @IBOutlet weak var categoryTextField: UITextField!
@@ -127,6 +133,7 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
                let filteredArray = filteredCategories[filteredTopLevelCategories[selectedTop]],
                row < filteredArray.count {
                     categoryTextField.text = filteredArray[row]
+                categoryTextField.endEditing(true)
             }
         }
     }
@@ -187,6 +194,19 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
         }
     }
     
+    //MARK: - description editing
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "write something about product here" {
+            textView.text = ""
+            textView.textColor = .label
+        } else {
+            if textView.text == "" {
+                textView.text = "write something about product here"
+                textView.textColor = .lightGray
+            }
+        }
+    }
+    
     //MARK: - finish editing or creating product
     @IBAction private func done(_ sender: UIButton) {
         
@@ -200,16 +220,33 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
             return
         }
         
-        model.editProduct(name: name, category: categoryTextField.text!, image: productImageView.image, description: longTextView.text)
+        model.editProduct(name: name, category: categoryTextField.text!, image: productImageView.image, description: descriptionTextView.text)
         
         if let nc = navigationController {
             if nc.children.count>1, let productsVC = nc.children[nc.children.count-2] as? ProductViewController {
                 productsVC.startRefreshingData()
+                
+                model.subscribeForUpdateProduct(subscriber: productsVC.model)
             }
             nc.popViewController(animated: true)
         } else {
             self.dismiss(animated: true)
         }
+    }
+    
+    @IBAction func deleteAction(_ sender: UIBarButtonItem) {
+        //ask one more time
+        let alert = UIAlertController(title: "warning", message: "Are you sure to delete this product?", preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: deleteProduct(_:)))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+       
+        self.present(alert, animated: true)
+
+    }
+    
+    @objc func deleteProduct(_ alert : UIAlertAction) {
+        model.deleteProduct()
     }
     
     /*

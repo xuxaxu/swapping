@@ -25,22 +25,20 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
     
     @IBOutlet weak var owner: UILabel!
 
+    @IBOutlet weak var descriptionHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var editBtn: UIBarButtonItem!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        categoryLabelView.text = model.product.category
-        productLabelView.text = model.product.name
-        descriptionLabelView.text = model.product.productDescription
-        if let image = model.product.image {
-                productImageView.image = image
-                imageWork.adjustImageView(imageView: &productImageView, widthConstraint: &widthConstraint, heightConstraint: &heightConstraint)
-        }
         
         bindViewModel()
         
-        model.getNameOfOwner()
-        model.getParentCategory()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        fillData()
     }
     
     private func bindViewModel() {
@@ -56,6 +54,33 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
         model.parentCategory.bind { [weak self] parent in
             self?.categoryLabelView.text = parent
         }
+        
+        model.currentUserIsOwner.bind { [weak self] isOwner in
+            if !isOwner {
+                self?.navigationItem.setRightBarButton(nil, animated: true)
+            }
+        }
+    }
+    
+    
+    @IBAction func editProduct(_ sender: UIBarButtonItem) {
+        coordinator?.showEditingProduct(product: model.product, presentingVC: self)
+    }
+    
+    func fillData() {
+        categoryLabelView.text = model.product.category
+        productLabelView.text = model.product.name
+        
+        descriptionLabelView.text = model.product.productDescription
+        imageWork.adjustTextView(textView: &descriptionLabelView, heightConstraint: &descriptionHeightConstraint)
+        
+        if let image = model.product.image {
+                productImageView.image = image
+                imageWork.adjustImageView(imageView: &productImageView, widthConstraint: &widthConstraint, heightConstraint: &heightConstraint)
+        }
+        
+        model.getNameOfOwner()
+        model.getParentCategory()
     }
     
     /*
