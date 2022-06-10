@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseAuthUI
 
-class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
+class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC, UITextFieldDelegate {
     
     var authStarted = false
     
@@ -26,8 +26,14 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
     
     @IBOutlet weak var saveCredentialsBtn: UIButton!
     
+    @IBOutlet weak var signInBtn: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        nameTextField.delegate = self
+        loginTextField.delegate = self
+        passwordTextField.delegate = self
 
         // Do any additional setup after loading the view.
         bindModel()
@@ -57,6 +63,8 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
+        nameTextField.becomeFirstResponder()
+        
         if !authStarted {
             authStarted = true
             model.checkSavedCredentials()
@@ -75,6 +83,10 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
     }
     
     @IBAction func loginEditDidEnd(_ sender: UITextField) {
+        
+        if let login = sender.text, let password = model.getSavedPassword(login: login) {
+            passwordTextField.text = password
+        }
     }
     
     @IBAction func passwordEditDidEnd(_ sender: UITextField) {
@@ -115,6 +127,22 @@ class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC {
         } else {
             coordinator?.showAlert(message: "fullfill all fields", in: self)
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextField = textField.superview?.superview?.viewWithTag(textField.tag + 1) {
+            
+            if let btn = nextField as? UIButton {
+                btn.isSelected = true
+                textField.resignFirstResponder()
+                btn.sendActions(for: .touchUpInside)
+            }
+            
+            nextField.becomeFirstResponder()
+        } else {
+            signInBtn.becomeFirstResponder()
+        }
+        return false
     }
     
 }

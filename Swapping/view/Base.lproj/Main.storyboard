@@ -164,7 +164,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="youremail@box.сom" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fud-1g-K5g">
+                                            <textField opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="youremail@box.сom" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fud-1g-K5g">
                                                 <rect key="frame" x="81.5" y="0.0" width="222.5" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" textContentType="email"/>
@@ -183,7 +183,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="secure password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zIr-5e-Dav">
+                                            <textField opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="secure password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zIr-5e-Dav">
                                                 <rect key="frame" x="81.5" y="0.0" width="222.5" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" secureTextEntry="YES" textContentType="password"/>
@@ -213,7 +213,7 @@
                                             </label>
                                         </subviews>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oKJ-3h-rVP">
+                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" pointerInteraction="YES" role="primary" translatesAutoresizingMaskIntoConstraints="NO" id="oKJ-3h-rVP">
                                         <rect key="frame" x="0.0" y="213" width="304" height="99"/>
                                         <color key="tintColor" systemColor="labelColor"/>
                                         <state key="normal" title="Button"/>
@@ -271,6 +271,7 @@
                         <outlet property="nameTextField" destination="gNu-r2-0qt" id="s7O-wj-uRR"/>
                         <outlet property="passwordTextField" destination="zIr-5e-Dav" id="MbY-3P-Ufn"/>
                         <outlet property="saveCredentialsBtn" destination="voI-C2-xM9" id="c6A-Kj-rx8"/>
+                        <outlet property="signInBtn" destination="oKJ-3h-rVP" id="h0g-YY-EQC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dxk-mN-CD1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -340,6 +341,16 @@
                     </collectionView>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="yTm-20-YIg">
+                        <nil key="title"/>
+                        <textField key="titleView" opaque="NO" contentMode="scaleToFill" showsMenuAsPrimaryAction="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="🔎 search by name or category" textAlignment="natural" minimumFontSize="17" id="9xF-i3-Lv1">
+                            <rect key="frame" x="62.5" y="5" width="232" height="34"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <action selector="searchEditChange:" destination="HcM-vD-Smd" eventType="editingChanged" id="lp4-fS-mUg"/>
+                            </connections>
+                        </textField>
                         <rightBarButtonItems>
                             <barButtonItem title="Log out" image="rectangle.portrait.and.arrow.right" catalog="system" id="xo0-j9-oUo">
                                 <color key="tintColor" systemColor="systemOrangeColor"/>
@@ -358,6 +369,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="productCollectionView" destination="u8R-hE-df2" id="q6V-aj-2lK"/>
+                        <outlet property="searchTextView" destination="9xF-i3-Lv1" id="Uib-d7-0wj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BdW-wE-eYh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -455,6 +467,14 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="kVF-CO-au4">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="5y7-Ta-g0Y">
+                            <color key="tintColor" systemColor="systemOrangeColor"/>
+                            <connections>
+                                <action selector="editProductAction:" destination="Hi3-ei-2pD" id="mzv-pk-Dka"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="categoryLabelView" destination="Vfj-GD-6Xa" id="n28-Dq-y6M"/>

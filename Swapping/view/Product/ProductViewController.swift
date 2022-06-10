@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProductViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CoordinatedVC {
+class ProductViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CoordinatedVC, UITextFieldDelegate {
     
     var coordinator: Coordinator?
     
@@ -15,8 +15,12 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     let refreshControl = UIRefreshControl()
     
+    @IBOutlet weak var searchTextView: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        searchTextView.delegate = self
         
         bindViewModel()
         
@@ -80,23 +84,18 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         return cell
     }
     
+    //MARK: - search
+     @IBAction func searchEditChange(_ sender: UITextField) {
+        model.filterString = sender.text ?? ""
+    }
+    
+    //MARK: - navigation
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row < model.products.count, let coordinator = coordinator {
-            coordinator.showProductDialogue(product: model.products[indexPath.row], in: self)
+        if indexPath.row < model.dataCount(), let product = model.dataForIndex(inx: indexPath.row), let coordinator = coordinator {
+            coordinator.showProductDialogue(product: product, in: self)
         }
     }
-
-    
-    // MARK: - Navigation
-
-    /*
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-        
-    }
-     */
     
     @IBAction func addProductAction(_ sender: UIBarButtonItem) {
         if let coordinator = coordinator {
@@ -107,5 +106,7 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
     @IBAction func logOutAction(_ sender: UIBarButtonItem) {
         coordinator?.showLogOut(in: self)
     }
+    
+    
     
 }

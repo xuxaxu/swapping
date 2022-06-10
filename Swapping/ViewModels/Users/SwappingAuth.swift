@@ -104,6 +104,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
     func logout() {
         do {
             try Auth.auth().signOut()
+            UserDefaults.standard.set(nil, forKey: "last authorized login")
         }
         catch {
             errorMessage.value = "error with logging out"
@@ -177,6 +178,14 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
     
     func getUserUid() -> String? {
         return Auth.auth().currentUser?.uid
+    }
+    
+    func getSavedPassword(login: String) -> String? {
+        let keychain = Keychain(service: "Swapping")
+        if let password = keychain[login] {
+            return password
+        }
+        return nil
     }
     
     enum Providers {

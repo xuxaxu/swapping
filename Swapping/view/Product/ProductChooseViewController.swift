@@ -63,7 +63,8 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
     }
     
     
-    @IBAction func editProduct(_ sender: UIBarButtonItem) {
+    
+    @IBAction func editProductAction(_ sender: UIBarButtonItem) {
         coordinator?.showEditingProduct(product: model.product, presentingVC: self)
     }
     
