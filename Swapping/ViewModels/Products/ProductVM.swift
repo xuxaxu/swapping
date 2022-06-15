@@ -39,6 +39,7 @@ class ProductVM: IPerRequest {
     
     var authService: SwappingAuth
     
+    
     func bind() {
         userService.userName.bind { [weak self] name in
             self?.ownerName.value = name
@@ -52,11 +53,6 @@ class ProductVM: IPerRequest {
             self?.errorMessage.value = message
         }
         
-        dataService.arrayOfObjects.bind { [weak self] categories in
-            if !categories.isEmpty {
-                self?.composePathCategory(model: self, category: categories[0])
-            }
-        }
     }
     
     func getNameOfOwner() {
@@ -75,7 +71,9 @@ class ProductVM: IPerRequest {
     func getParentCategory() {
         if let category = product.category {
             parentCategory.value = ""
-            dataService.getDataToArrayOfObjects(ref: "categories/", key: "name", value: category, false)
+            dataService.getElement(path: "categories/" + category) { [weak self] firstCategory in
+                self?.composePathCategory(model: self, category: firstCategory)
+            }
         }
     }
     

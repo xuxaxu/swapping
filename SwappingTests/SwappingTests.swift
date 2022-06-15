@@ -20,6 +20,8 @@ class SwappingTests: XCTestCase {
     
     var sutAuth: SwappingAuth?
     
+    var container: Container = Container()
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         try super.setUpWithError()
@@ -27,7 +29,7 @@ class SwappingTests: XCTestCase {
         
         sutDataBase = FireDataBase(container: Container(), args: ())
         
-        sutAuth = SwappingAuth()
+        sutAuth = container.resolve(args: ())
     }
 
     override func tearDownWithError() throws {
@@ -64,96 +66,27 @@ class SwappingTests: XCTestCase {
         
     }
     
-    //in database must by categories
-    func testFireDataBaseGetDataForCategories() {
-        let promise = expectation(description: "categories recieved")
-        
-        var categoriesCount = 0
-        var nameOfFirstCategory: String?
-        sutDataBase?.getData(path: "categories/") {dict, error  in
-            
-            XCTAssertNotNil(error)
-            
-            categoriesCount = dict.count
-            
-            for (_, value) in dict {
-                if let object = try? JSONDecoder().decode(Category.self, from: value) {
-                    nameOfFirstCategory = object.name
-                }
-                break
-            }
-            promise.fulfill()
-        }
-        wait(for: [promise], timeout: 5)
-        XCTAssert(categoriesCount > 0)
-        XCTAssertNotNil(nameOfFirstCategory)
-    }
-    
-    //we hope that there is at least one product in database
-    func testFireDataBaseGetDataForProducts() {
-        let promise = expectation(description: "products recieved")
-    
-        var productsCount = 0
-        var nameOfFirstProduct: String?
-        var categoryOfFirstProduct: String?
-        
-        sutDataBase?.getData(path: "products/"){dict, error in
-            
-            XCTAssertNotNil(error)
-            
-            productsCount = dict.count
-            
-            for object in dict.values {
-                if let product = try? JSONDecoder().decode(Product.self, from: object) {
-                    nameOfFirstProduct = product.name
-                    categoryOfFirstProduct = product.category
-                }
-                break
-            }
-            promise.fulfill()
-        }
-        
-        wait(for: [promise], timeout: 5)
-        XCTAssert(productsCount > 0)
-        XCTAssertNotNil(nameOfFirstProduct)
-        XCTAssertNotNil(categoryOfFirstProduct)
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure(metrics: [XCTClockMetric(), XCTCPUMetric(), XCTStorageMetric(), XCTMemoryMetric()]) {
-            // Put the code you want to measure the time of here.
-            sutDataBase?.getData(path: "products", complition: { dict, error in
-                XCTAssertNotNil(error)
-                for object in dict.values {
-                    if let _ = try? JSONDecoder().decode(Product.self, from: object) {
-                        
-                    }
-                }
-            })
-        }
-    }
-    
     //MARK: - saving credentials
     func testSaving() {
         let testLogin = "ksukor@mail.ru"
         let testPassword = "123456"
         
-        sutAuth?.saveCredentials(login: testLogin, password: testPassword)
+        sutAuth?.authenticate(login: testLogin, password: testPassword, save: true)
         
-        let saved = sutAuth?.getLastEntryCredentials()
+        let saved = sutAuth?.getSavedPassword(login: testLogin)
         
-        XCTAssertEqual(saved?.login, testLogin)
-        XCTAssertEqual(saved?.password, testPassword)
+        XCTAssertEqual(saved, testPassword)
     }
     
     func testAuthentication() {
         let testLogin = "ksukor@mail.ru"
         let testPassword = "123456"
         
-        sutAuth?.authenticate(login: testLogin, password: testPassword)
+        sutAuth?.authenticate(login: testLogin, password: testPassword, save: false)
         
-        XCTFail()
+        if sutAuth?.authenticated.value ?? true {
+            XCTFail()
+        }
     }
 
 }

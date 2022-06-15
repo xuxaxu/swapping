@@ -50,3 +50,8 @@ class Category : DataObject {
         return "id"
     }
 }
+extension Category: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}

@@ -13,11 +13,31 @@ class ProductEditVM : IPerRequest {
     typealias Arguments = Product?
     
     
-    var topLevelCategoryNames: Dynamic<[String]> = Dynamic([])
+    private var topLevelCategories: [Category] = [] {
+        didSet {
+            filteredTopLevelCategories = transformTopLevelCategoriesToNames()
+        }
+    }
     
-    var allCategories: Dynamic<Dictionary<String,[String]>> = Dynamic([:])
+    private var allCategories: Dictionary<Category,[Category]> = [:] {
+        didSet {
+            filteredCategories = transformAllCategoriesToNames()
+        }
+    }
+    
+    var filterStr = "" {
+        didSet {
+            filterCategories()
+        }
+    }
+    
+    var filteredCategories : [String : [String]] = [:]
+    
+    var filteredTopLevelCategories : [String] = []
     
     var product: Product?
+    
+    var category: Dynamic<Category>?
     
     private var dataServiceCategories : DataService<Category>
     
@@ -41,18 +61,17 @@ class ProductEditVM : IPerRequest {
     
     func bindDataService() {
         dataServiceCategories.arrayOfObjects.bind({ [weak self] arrayOfObjects in
-                    self?.topLevelCategoryNames.value = arrayOfObjects.map{ $0.name ?? "" }
+                    self?.topLevelCategories = arrayOfObjects
                     self?.fillChildCategories(inCategoryArray: arrayOfObjects, parentCategoty: nil)
             })
             
             dataServiceCategories.arrayOfChildren.bind { [weak self] (category, childObjects) in
-                if let name = category.name {
-                    if self?.allCategories.value[name] == nil {
-                        self?.allCategories.value[name] = []
+                
+                    if self?.allCategories[category] == nil {
+                        self?.allCategories[category] = []
                     }
-                    self?.allCategories.value[name]?.append(contentsOf: childObjects.map{ $0.name ?? "" })
+                    self?.allCategories[category]?.append(contentsOf: childObjects)
                     self?.fillChildCategories(inCategoryArray: childObjects, parentCategoty: category)
-                }
             }
         
         dataService.errorMessage.bind { [weak self] message in
@@ -60,8 +79,16 @@ class ProductEditVM : IPerRequest {
         }
     }
     
+    func getProductCategory() {
+        if let categoryId = product?.category {
+            dataServiceCategories.getElement(path: "categories/" + categoryId) { [weak self] category in
+                self?.category?.value = category
+            }
+        }
+    }
+    
     func fillTopLevelCategories() {
-        allCategories.value = [:]
+        allCategories = [:]
         dataServiceCategories.getCategories(in: nil)
     }
     
@@ -75,24 +102,37 @@ class ProductEditVM : IPerRequest {
          
         guard let name = name, name != "" else {return false}
         
-        for (key, value) in allCategories.value {
-                if value.contains(name) || (value.count == 0 && key == name) {
-                    return true
-                }
-            }
+        if !allCategories.values.filter({ !$0.filter({ $0.name == name }).isEmpty }).isEmpty {
+            return true
+        }
+        
+        if !topLevelCategories.filter({ $0.name == name && (allCategories[$0]?.isEmpty ?? true)}).isEmpty {
+            return true
+        }
+        
         return false
     }
     
     func editProduct(name: String, category: String, image: UIImage?, description: String?) {
+        
+        //detect category id from name for saving in product
+        var categoryObject: Category?
+        let arrayOfCategoriesWithName = allCategories.values.filter( {!$0.filter({ $0.name == category }).isEmpty })
+        if arrayOfCategoriesWithName.isEmpty {
+            categoryObject = topLevelCategories.filter({ $0.name == category }).first
+        } else {
+            categoryObject = arrayOfCategoriesWithName.first!.filter({ $0.name == category }).first
+        }
+        
         if product == nil {
-            product = Product(name: name, category: category, image: image, features: nil, description: description)
+            product = Product(name: name, category: categoryObject?.id ?? "unknown", image: image, features: nil, description: description)
             if product != nil {
                 dataService.createObject(object: product!)
             }
             product?.owner = userService.getUserUid()
         } else {
             product!.name = name
-            product!.category = category
+            product!.category = categoryObject?.id ?? "unknown"
             product!.productDescription = description
             product!.image = image
         }
@@ -109,6 +149,35 @@ class ProductEditVM : IPerRequest {
             self?.errorMessage.value = message
             }
         }
+    }
+    
+    private func transformTopLevelCategoriesToNames() -> [String] {
+        return topLevelCategories.map({ $0.name ?? "unknown" })
+    }
+    
+    private func transformAllCategoriesToNames() -> Dictionary<String, [String]> {
+        return Dictionary(uniqueKeysWithValues: allCategories.map({ key, value in
+            (key.name ?? "unknown", value.map({ $0.name ?? "unknown" }))
+        }))
+    }
+    
+    private func filterCategories() {
+        if filterStr != "" {
+            filteredCategories = transformAllCategoriesToNames().filter({ (key, value) in
+                value.filter{$0.starts(with: filterStr)}.count > 0
+            })
+            for (key, value) in filteredCategories {
+                filteredCategories[key] = value.filter{ $0.starts(with: filterStr) }
+            }
+            filteredTopLevelCategories = Array(filteredCategories.keys)
+        } else {
+            refreshFilteredCategories()
+        }
+    }
+    
+    func refreshFilteredCategories() {
+        filteredTopLevelCategories = transformTopLevelCategoriesToNames()
+        filteredCategories = transformAllCategoriesToNames()
     }
     
 }

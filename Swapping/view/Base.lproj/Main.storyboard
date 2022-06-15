@@ -368,6 +368,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="navigation" destination="yTm-20-YIg" id="Qct-Ux-4nn"/>
                         <outlet property="productCollectionView" destination="u8R-hE-df2" id="q6V-aj-2lK"/>
                         <outlet property="searchTextView" destination="9xF-i3-Lv1" id="Uib-d7-0wj"/>
                     </connections>

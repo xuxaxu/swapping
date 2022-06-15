@@ -47,7 +47,7 @@ class FireDataBase : ISingleton {
     
     func uploadImage(image : UIImage, ref: String, complition: @escaping (URL)->Void) {
         
-        let fullRef = "systemImages/" + ref + ".jpeg"
+        let fullRef = "productImages/" + ref + ".jpeg"
         
         let refUpload = storageRef.child(fullRef)
         

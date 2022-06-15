@@ -45,9 +45,16 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         model.errorMessage.bind { [weak self] message in
             self?.coordinator?.showAlert(message: message, in: self!)
         }
+        
+        model.menuCategories.bind { [weak self] dictForMenu in
+            self?.fillFilterCategoryMenu()
+        }
     }
 
     @objc func startRefreshingData() {
+        
+        model.getCategoriesForFilter()
+        
         model.loadData()
     }
     
@@ -107,6 +114,28 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         coordinator?.showLogOut(in: self)
     }
     
+    @IBOutlet weak var navigation: UINavigationItem!
     
+    private func fillFilterCategoryMenu() {
+        
+        var menuItems : [UIAction] = [UIAction(title: "All", image: nil, identifier: nil, handler: menuAction(action:))]
+        
+        for topCategory in model.menuCategories.value {
+            menuItems.append(UIAction(title: topCategory.key.name ?? "unknown", handler: {[weak self] action in
+                self?.menuAction(action: action)
+            }))
+        }
+        
+        let filterCategoryMenu = UIMenu(title: "categories", image: nil, identifier: nil, options: [], children: menuItems)
+        if let navigationItem = self.navigationController?.navigationBar.topItem {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "All ⌄", image: nil, primaryAction: nil, menu: filterCategoryMenu)
+        }
+    }
+    
+    @objc func menuAction(action: UIAction) {
+        model.choosenCategory = action.title
+        navigationItem.leftBarButtonItem?.title = action.title
+        model.filterString = model.filterString
+    }
     
 }

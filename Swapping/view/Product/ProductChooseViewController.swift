@@ -69,7 +69,7 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
     }
     
     func fillData() {
-        categoryLabelView.text = model.product.category
+        
         productLabelView.text = model.product.name
         
         descriptionLabelView.text = model.product.productDescription

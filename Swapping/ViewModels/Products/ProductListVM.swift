@@ -40,30 +40,37 @@ final class ProductListVM: IPerRequest, ObjectUpdatesSubscriber {
     
     var filterString: String = "" {
         didSet {
-            if filterString == "" {
-                filteredProducts = products
-            } else {
-                filteredProducts = products.filter({ product in
-                    var suitable = false
-                    if let name = product.name {
-                        suitable = name.contains(filterString)
-                    }
-                    if let category = product.category {
-                        if let str = filterCategory.filteredStr[category] {
-                            suitable = suitable || str.contains(filterString)
-                        } else {
-                            filterCategory.getCategory(id: category)
-                        }
-                    }
-                    return suitable
-                })
-            }
+            setFilterStr()
         }
     }
     
     private var dataServiceCategory: DataService<Category>
     
+    //service for work with categories for filtering by them
     private var filterCategory: CategoryFilter
+    
+    //when change category filter from menu
+    var choosenCategory = "" {
+        didSet {
+            setCategoryFilter()
+        }
+    }
+    
+    private var preFilteredProducts : [Product] = [] {
+        didSet {
+            setFilterStr()
+        }
+    }
+    
+    //for filter by categories
+    var menuCategories: Dynamic<Dictionary<Category, [String]>> = Dynamic([:])
+    
+    private var filterCategoryStr: Dictionary<String, String> = [:] {
+        didSet {
+            setCategoryFilter()
+        }
+    }
+    
     
     required init(container: IContainer, args: ()) {
         dataService = container.resolve(args: Product.self)
@@ -73,10 +80,10 @@ final class ProductListVM: IPerRequest, ObjectUpdatesSubscriber {
         bindDataService()
     }
     
-    func bindDataService() {
+    private func bindDataService() {
         dataService.arrayOfObjects.bind { [weak self] data in
-                self?.products = data
-                self?.filterString = self!.filterString
+            self?.products = data
+            self?.setCategoryFilter()
         }
         
         dataService.image.bind({ [weak self] object in
@@ -89,6 +96,15 @@ final class ProductListVM: IPerRequest, ObjectUpdatesSubscriber {
         dataService.errorMessage.bind { [weak self] message in
             self?.errorMessage.value = message
         }
+        
+        filterCategory.menuCategories.bind { [weak self] menu in
+            self?.menuCategories.value = menu
+        }
+        
+        filterCategory.filterCategoryStr.bind({[weak self] str in
+            self?.filterCategoryStr = str
+        })
+        
     }
     
     func loadData() {
@@ -115,5 +131,37 @@ final class ProductListVM: IPerRequest, ObjectUpdatesSubscriber {
         }
     }
     
+    func getCategoriesForFilter() {
+        filterCategory.getAllCategories()
+    }
+    
+    private func setCategoryFilter() {
+        if choosenCategory == "" || choosenCategory == "All" {
+            preFilteredProducts = products
+        } else {
+            preFilteredProducts = products.filter({ (filterCategoryStr[choosenCategory] == nil) ? false : filterCategoryStr[choosenCategory]!.contains($0.category ?? "imposible") })
+        }
+    }
+    
+    private func setFilterStr() {
+        if filterString == "" {
+            filteredProducts = preFilteredProducts
+        } else {
+            filteredProducts = preFilteredProducts.filter({ product in
+                var suitable = false
+                if let name = product.name {
+                    suitable = name.contains(filterString)
+                }
+                if let category = product.category {
+                    if let str = filterCategory.filteredStr[category] {
+                        suitable = suitable || str.contains(filterString)
+                    } else {
+                        filterCategory.getCategory(id: category)
+                    }
+                }
+                return suitable
+            })
+        }
+    }
     
 }

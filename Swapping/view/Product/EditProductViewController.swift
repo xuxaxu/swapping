@@ -49,17 +49,14 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     }
     
     func bindViewModel() {
-        model.topLevelCategoryNames.bind { [weak self] topLevels in
-            self?.filteredTopLevelCategories = topLevels
-        }
-        
-        model.allCategories.bind { [weak self] dictCategories in
-            self?.filteredCategories = dictCategories
-        }
         
         model.errorMessage.bind { [weak self] message in
             self?.coordinator?.showAlert(message: message, in: self!)
         }
+        
+        model.category?.bind({ [weak self] category in
+            self?.categoryTextField.text = category.name
+        })
     }
     
     @IBOutlet private weak var shortTextView: UITextField!
@@ -77,9 +74,6 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     
     var pickerView = UIPickerView()
     
-    var filteredCategories : [String : [String]] = [:]
-    var filteredTopLevelCategories : [String] = []
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2
     }
@@ -87,12 +81,12 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch component {
             
-        case 0: return filteredTopLevelCategories.count //DataService.shared.topLevelCategories.count
+        case 0: return model.filteredTopLevelCategories.count
             
         case 1: 
             let selectedRow = pickerView.selectedRow(inComponent: 0)
-            if  selectedRow < filteredTopLevelCategories.count,
-                let count = filteredCategories[filteredTopLevelCategories[selectedRow]]?.count {
+            if  selectedRow < model.filteredTopLevelCategories.count,
+                let count = model.filteredCategories[model.filteredTopLevelCategories[selectedRow]]?.count {
                 return count
             } else {
                 return 0
@@ -105,10 +99,10 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if component == 0 {
-            return filteredTopLevelCategories[row] //DataService.shared.topLevelCategories[row]
+            return model.filteredTopLevelCategories[row]
         } else {
             
-            if let arrayCategories = filteredCategories[filteredTopLevelCategories[pickerView.selectedRow(inComponent: 0)]],
+            if let arrayCategories = model.filteredCategories[model.filteredTopLevelCategories[pickerView.selectedRow(inComponent: 0)]],
                 row < arrayCategories.count {
                     return arrayCategories[row]
             }
@@ -119,18 +113,18 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if component == 0 {
             pickerView.reloadComponent(1)
-            if row < filteredTopLevelCategories.count, filteredCategories[filteredTopLevelCategories[row]]?.count == 0 {
-                categoryTextField.text = filteredTopLevelCategories[row]
+            if row < model.filteredTopLevelCategories.count, model.filteredCategories[model.filteredTopLevelCategories[row]]?.count == 0 {
+                categoryTextField.text = model.filteredTopLevelCategories[row]
             } else {
-                if row < filteredTopLevelCategories.count, filteredCategories[filteredTopLevelCategories[row]]?.count == 1 {
-                    categoryTextField.text = filteredCategories[filteredTopLevelCategories[row]]?[0] ?? ""
+                if row < model.filteredTopLevelCategories.count, model.filteredCategories[model.filteredTopLevelCategories[row]]?.count == 1 {
+                    categoryTextField.text = model.filteredCategories[model.filteredTopLevelCategories[row]]?[0] ?? ""
                 }
             }
         } else {
             let selectedTop = pickerView.selectedRow(inComponent: 0)
               
-            if selectedTop < filteredTopLevelCategories.count,
-               let filteredArray = filteredCategories[filteredTopLevelCategories[selectedTop]],
+            if selectedTop < model.filteredTopLevelCategories.count,
+               let filteredArray = model.filteredCategories[model.filteredTopLevelCategories[selectedTop]],
                row < filteredArray.count {
                     categoryTextField.text = filteredArray[row]
                 categoryTextField.endEditing(true)
@@ -139,23 +133,11 @@ class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPic
     }
     
     @IBAction private func categoryTextDidBegin(_ sender: UITextField) {
-        filteredTopLevelCategories = model.topLevelCategoryNames.value
-        filteredCategories = model.allCategories.value
+        model.refreshFilteredCategories()
     }
     
     @IBAction private func categoryTextEditingChanged(_ sender: UITextField) {
-        if let text = categoryTextField.text, text != "" {
-            filteredCategories = model.allCategories.value.filter({ (key, value) in
-                value.filter{$0.starts(with: text)}.count > 0
-            })
-            for (key, value) in filteredCategories {
-                filteredCategories[key] = value.filter{ $0.starts(with: text) }
-            }
-            filteredTopLevelCategories = Array(filteredCategories.keys)
-        } else {
-            filteredTopLevelCategories = model.topLevelCategoryNames.value
-            filteredCategories = model.allCategories.value
-        }
+        model.filterStr = categoryTextField.text ?? ""
         pickerView.reloadComponent(0)
         pickerView.reloadComponent(1)
     }
