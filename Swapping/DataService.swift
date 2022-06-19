@@ -29,7 +29,7 @@ class DataService<T: DataObject> : NSObject, IPerRequest {
     
     
     required init(container: IContainer, args: T.Type) {
-        fireDataBase = FireDataBase(container: container, args: ())
+        fireDataBase = container.resolve(args: ()) //FireDataBase(container: container, args: ())
         image = Dynamic(T.init())
         arrayOfObjects = Dynamic([T.init()])
         publisher = container.resolve(args: ())

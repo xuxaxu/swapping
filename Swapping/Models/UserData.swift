@@ -44,5 +44,9 @@ class UserData : DataObject {
     override func getRef() -> String {
         return "usersData/" + (id ?? "unknown")
     }
+    
+    override func getTopRef() -> String {
+        return "userData/"
+    }
 }
 

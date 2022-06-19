@@ -20,12 +20,14 @@ class ProductVM: IPerRequest {
         
         authService = container.resolve(args: ())
         
+        messageService = container.resolve(args: ())
+        
         bind()
     }
     
     var product: Product
     
-    var userService: UserDataVM
+    private var userService: UserDataVM
     
     var errorMessage = Dynamic("")
     
@@ -35,10 +37,15 @@ class ProductVM: IPerRequest {
     
     var currentUserIsOwner = Dynamic(false)
     
-    var dataService: DataService<Category>
+    private var dataService: DataService<Category>
     
-    var authService: SwappingAuth
+    private var authService: SwappingAuth
     
+    private var messageService: MessageService
+    
+    var messages: [Message] = []
+    
+    var messagesUpdated = Dynamic(false)
     
     func bind() {
         userService.userName.bind { [weak self] name in
@@ -93,4 +100,29 @@ class ProductVM: IPerRequest {
             }
         }
     }
+    
+    func writeToOwner(message: String) {
+        if let currentUid = authService.getUserUid() {
+            var message: MessageProtocol = Message(authorId: currentUid, subject: product, message: message)
+            messageService.writeMessage(message: &message)
+        }
+    }
+    
+    func labelForAuthor(message: Message) -> String {
+        if message.authorId == authService.getUserUid() {
+            return "You"
+        } else {
+            return "Owner"
+        }
+    }
+    
+    func getMessages() {
+        if let userId = authService.getUserUid(), let productId = product.id {
+            messageService.readMessages(userId: userId, productId: productId) { [weak self] messagesFromDB in
+                self?.messages = messagesFromDB
+                self?.messagesUpdated.value = true
+            }
+        }
+    }
+    
 }

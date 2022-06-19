@@ -25,6 +25,10 @@ class Category : DataObject {
             return "categories/" + (id ?? "")
     }
     
+    override func getTopRef() -> String {
+        return "categories/"
+    }
+    
     enum CodingKeys: String, CodingKey {
         case name
         case imgUrl = "image_url"

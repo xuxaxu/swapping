@@ -59,5 +59,9 @@ class Product : DataObject {
             return "products"
         }
     }
+    
+    override func getTopRef() -> String {
+        return "products/"
+    }
 }
 

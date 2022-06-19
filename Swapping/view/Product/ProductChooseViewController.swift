@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProductChooseViewController: UIViewController, CoordinatedVC {
+class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewDelegate, UITableViewDataSource {
     
     var coordinator: Coordinator?
     
@@ -29,9 +29,19 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
     
     @IBOutlet weak var editBtn: UIBarButtonItem!
     
+    @IBOutlet weak var messageTextField: UITextField!
+    
+    @IBOutlet weak var sendMessageBtn: UIButton!
+    
+    @IBOutlet weak var messageTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        messageTableView.dataSource = self
+        messageTableView.delegate = self
+        messageTableView.register(UINib(nibName: "MessageTableViewCell", bundle: .main), forCellReuseIdentifier: "messageTableViewCell")
+        messageTableView.estimatedRowHeight = 100
         
         bindViewModel()
         
@@ -60,6 +70,12 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
                 self?.navigationItem.setRightBarButton(nil, animated: true)
             }
         }
+        
+        model.messagesUpdated.bind { [weak self] updated in
+            if updated {
+                self?.messageTableView.reloadData()
+            }
+        }
     }
     
     
@@ -82,16 +98,39 @@ class ProductChooseViewController: UIViewController, CoordinatedVC {
         
         model.getNameOfOwner()
         model.getParentCategory()
+        model.getMessages()
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    //MARK: message exchange
+    
+    @IBAction func sendMessageAction(_ sender: UIButton) {
+        if let message = messageTextField.text {
+            model.writeToOwner(message: message)
+        }
     }
-    */
-
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return model.messages.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "messageTableViewCell", for: indexPath) as? MessageTableViewCell,
+           model.messages.count > indexPath.row {
+            let message = model.messages[indexPath.row]
+            cell.configure(author: model.labelForAuthor(message: message), message: message.text ?? "")
+            
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
 }

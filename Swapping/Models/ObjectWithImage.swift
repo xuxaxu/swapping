@@ -9,7 +9,7 @@ import Foundation
 import UIKit.UIImage
 
 //any kind who have image
-protocol ObjectWithImage : AnyObject, Decodable, Equatable {
+protocol ObjectWithImage : Decodable, Equatable, ObjectWithId {
     var image : UIImage? {get set}
     var imgUrl: URL? {get set}
     var name: String? {get set}
@@ -20,6 +20,11 @@ protocol ObjectWithImage : AnyObject, Decodable, Equatable {
 }
 
 class DataObject: ObjectWithImage {
+    
+    func getTopRef() -> String {
+        return "objects/"
+    }
+    
     static func == (lhs: DataObject, rhs: DataObject) -> Bool {
         return lhs.id == rhs.id
     }

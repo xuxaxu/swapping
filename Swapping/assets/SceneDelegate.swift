@@ -26,10 +26,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let vc = coordinator.start()
         
-        if vc == nil {
-            return
-        }
-        
         self.window?.rootViewController = vc
         self.window?.makeKeyAndVisible()
     }

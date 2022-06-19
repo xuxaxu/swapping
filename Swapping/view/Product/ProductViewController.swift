@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProductViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CoordinatedVC, UITextFieldDelegate {
+class ProductViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CoordinatedVC, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
     var coordinator: Coordinator?
     
@@ -17,6 +17,7 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @IBOutlet weak var searchTextView: UITextField!
     
+     
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -91,6 +92,10 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 128, height: 128)
+    }
+    
     //MARK: - search
      @IBAction func searchEditChange(_ sender: UITextField) {
         model.filterString = sender.text ?? ""
@@ -137,5 +142,6 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
         navigationItem.leftBarButtonItem?.title = action.title
         model.filterString = model.filterString
     }
+    
     
 }

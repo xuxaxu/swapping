@@ -111,19 +111,28 @@ class FireDataBase : ISingleton {
     }
     
     //MARK: - editing data
-    func createObject(object : DataObject)->String {
+    func createObject(object : ObjectWithId)->String {
         
         let objectPath = object.getRef()
         
         guard let newId = ref.child(objectPath).childByAutoId().key else { return ""}
         
-        ref.child(objectPath + "/" + newId + "/name").setValue(object.name)
+        ref.child(objectPath + "/" + newId + "/id").setValue(newId)
         
         return newId
         
     }
     
     func editObject(object : DataObject, stringValues: Dictionary<String, String>, complition: @escaping (URL)->Void) {
+        
+        editObjectWithId(object: object, stringValues: stringValues)
+        
+        if let image = object.image {
+            uploadImage(image: image, ref: object.id ?? "unknown" + ".jpeg", complition: complition)
+        }
+    }
+    
+    func editObjectWithId(object : ObjectWithId, stringValues: Dictionary<String, Any>) {
         
         let path = object.getRef()+"/"
         
@@ -134,10 +143,6 @@ class FireDataBase : ISingleton {
         
         DispatchQueue.global(qos: .userInitiated).async { [ref, updates] in
             ref.updateChildValues(updates)
-        }
-        
-        if let image = object.image {
-            uploadImage(image: image, ref: object.id ?? "unknown" + ".jpeg", complition: complition)
         }
     }
     
@@ -232,7 +237,6 @@ class FireDataBase : ISingleton {
                complition(dataRecieved, nil)
            }
        }
-    
 }
     
 
