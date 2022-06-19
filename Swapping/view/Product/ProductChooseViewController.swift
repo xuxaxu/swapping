@@ -106,6 +106,8 @@ class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewD
     @IBAction func sendMessageAction(_ sender: UIButton) {
         if let message = messageTextField.text {
             model.writeToOwner(message: message)
+            messageTextField.text = ""
+            model.getMessages()
         }
     }
     
@@ -117,7 +119,7 @@ class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewD
         if let cell = tableView.dequeueReusableCell(withIdentifier: "messageTableViewCell", for: indexPath) as? MessageTableViewCell,
            model.messages.count > indexPath.row {
             let message = model.messages[indexPath.row]
-            cell.configure(author: model.labelForAuthor(message: message), message: message.text ?? "")
+            cell.configure(author: model.labelForAuthor(message: message), message: message.text ?? "", date: message.date)
             
             return cell
         } else {
@@ -126,7 +128,16 @@ class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        
+        let fixedWidth = tableView.frame.width - 10
+        let textView = UITextView()
+        if let text = model.messages[indexPath.row].text {
+            textView.text = text
+            let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+            return newSize.height + 30
+        } else {
+            return 60
+        }
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

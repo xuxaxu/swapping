@@ -18,43 +18,50 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="author" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kEJ-SE-ZOK">
-                        <rect key="frame" x="20" y="0.0" width="418" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
+                        <rect key="frame" x="20" y="1" width="42" height="20"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" systemColor="systemGrayColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="left" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="message" adjustsFontForContentSizeCategory="YES" id="Ceh-lH-Feq">
                         <rect key="frame" x="12" y="29" width="414" height="50"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <color key="textColor" systemColor="systemGray4Color"/>
+                        <color key="backgroundColor" red="0.57647058819999997" green="0.70980392160000005" blue="0.99215686270000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="textColor" systemColor="labelColor"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="right" verticalHuggingPriority="251" text="date" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fc-Lj-UUP">
+                        <rect key="frame" x="62" y="1" width="356" height="17"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" systemColor="systemGrayColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="0Fc-Lj-UUP" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="1" id="39r-QX-ZLm"/>
                     <constraint firstItem="Ceh-lH-Feq" firstAttribute="top" secondItem="kEJ-SE-ZOK" secondAttribute="bottom" constant="8" symbolic="YES" id="7Ly-or-iJG"/>
-                    <constraint firstItem="kEJ-SE-ZOK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="SHr-4x-GdI"/>
+                    <constraint firstAttribute="trailing" secondItem="0Fc-Lj-UUP" secondAttribute="trailing" constant="20" symbolic="YES" id="ARb-LQ-Q5B"/>
+                    <constraint firstItem="0Fc-Lj-UUP" firstAttribute="leading" secondItem="kEJ-SE-ZOK" secondAttribute="trailing" id="McD-vL-JLr"/>
+                    <constraint firstItem="kEJ-SE-ZOK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="1" id="SHr-4x-GdI"/>
                     <constraint firstItem="kEJ-SE-ZOK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" symbolic="YES" id="Tzw-BF-v3z"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
-            <constraints>
-                <constraint firstItem="njF-e1-oar" firstAttribute="trailing" secondItem="kEJ-SE-ZOK" secondAttribute="trailing" id="0B8-sW-3PA"/>
-            </constraints>
             <connections>
                 <outlet property="authorLabel" destination="kEJ-SE-ZOK" id="FZC-w7-q63"/>
+                <outlet property="dateLabel" destination="0Fc-Lj-UUP" id="A8d-yx-YOc"/>
                 <outlet property="messageTextView" destination="Ceh-lH-Feq" id="SRT-wU-cYw"/>
             </connections>
             <point key="canvasLocation" x="223.18840579710147" y="100.78125"/>
         </tableViewCell>
     </objects>
     <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
-        <systemColor name="systemGray4Color">
-            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <systemColor name="systemGrayColor">
+            <color red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

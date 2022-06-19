@@ -51,7 +51,7 @@ class MessageService: MessageServiceProtocol, ISingleton {
                 }
             }
             complition( arrayOfMessages.sorted { lhs, rhs in
-                lhs.date ?? Date() < rhs.date ?? Date ()
+                lhs.date ?? Date() > rhs.date ?? Date ()
             } )
         }
     }
