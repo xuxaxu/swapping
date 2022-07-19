@@ -9,7 +9,7 @@ import UIKit
 
 class ProductViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, CoordinatedVC, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
     
     var model: ProductListVM!
     
@@ -104,13 +104,15 @@ class ProductViewController: UIViewController, UICollectionViewDelegate, UIColle
     //MARK: - navigation
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row < model.dataCount(), let product = model.dataForIndex(inx: indexPath.row), let coordinator = coordinator {
+        if indexPath.row < model.dataCount(),
+            let product = model.dataForIndex(inx: indexPath.row),
+            let coordinator = coordinator as? ProductListCoordinatorProtocol {
             coordinator.showProductDialogue(product: product, in: self)
         }
     }
     
     @IBAction func addProductAction(_ sender: UIBarButtonItem) {
-        if let coordinator = coordinator {
+        if let coordinator = coordinator as? ProductListCoordinatorProtocol {
             coordinator.showEditingProduct(product: nil, presentingVC: self)
         }
     }

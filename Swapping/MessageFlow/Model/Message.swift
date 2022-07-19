@@ -7,16 +7,7 @@
 
 import Foundation
 
-protocol ObjectWithId: AnyObject {
-    
-    var id: String? { get set }
-    
-    func getRef() -> String
-    
-    func getTopRef() -> String
-}
-
-protocol MessageProtocol: ObjectWithId {
+protocol MessageProtocol: ObjectWithId, Decodable {
     var authorId: String? { get set }
     var recieverId: String? { get set }
     var date: Date? { get set }
@@ -30,12 +21,6 @@ protocol MessageProtocol: ObjectWithId {
     var hour: Int? { get set }
     var minute: Int? { get set }
     var second: Int? { get set }
-}
-
-enum TypesOfSubjects: String, Codable {
-    case product
-    case user
-    case category
 }
 
 class Message : MessageProtocol, Decodable {

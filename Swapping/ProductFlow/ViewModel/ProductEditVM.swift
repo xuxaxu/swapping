@@ -125,11 +125,14 @@ class ProductEditVM : IPerRequest {
         }
         
         if product == nil {
-            product = Product(name: name, category: categoryObject?.id ?? "unknown", image: image, features: nil, description: description)
-            if product != nil {
-                dataService.createObject(object: product!)
-            }
-            product?.owner = userService.getUserUid()
+            let product = Product()
+            product.name = name
+            product.category = categoryObject?.id ?? "unknown"
+            product.image = image
+            product.productDescription = description
+            dataService.createObject(object: product)
+            product.owner = userService.getUserUid()
+            self.product = product
         } else {
             product!.name = name
             product!.category = categoryObject?.id ?? "unknown"

@@ -9,7 +9,7 @@ import UIKit
 
 class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewDelegate, UITableViewDataSource {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
     
     var model: ProductVM!
     
@@ -81,7 +81,9 @@ class ProductChooseViewController: UIViewController, CoordinatedVC, UITableViewD
     
     
     @IBAction func editProductAction(_ sender: UIBarButtonItem) {
-        coordinator?.showEditingProduct(product: model.product, presentingVC: self)
+        if let coordinator = coordinator as? ProductListCoordinatorProtocol {
+            coordinator.showEditingProduct(product: model.product, presentingVC: self)
+        }
     }
     
     func fillData() {

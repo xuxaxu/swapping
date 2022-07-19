@@ -9,7 +9,7 @@ import UIKit
 
 class EditProductViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate, PhotoPickerDelegate, CoordinatedVC, UITextViewDelegate {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
     
     var model: ProductEditVM!
     

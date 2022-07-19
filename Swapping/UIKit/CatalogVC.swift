@@ -9,7 +9,7 @@ import UIKit
 
 class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CoordinatedVC {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
     
     var model: CategoryListVM!
         
@@ -96,7 +96,9 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
         if let model = model, indexPath.row < model.categories.count {
             let category = model.categories[indexPath.row]
             if let coordinator = coordinator {
-                coordinator.showCategories(in: category, presentingVC: self)
+                if let categoryCoordinator = coordinator as? CategoryListCoordinatorProtocol {
+                    categoryCoordinator.showCategories(in: category, presentingVC: self)
+                }
             }
         }
     }
@@ -127,7 +129,7 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let editAction = UIContextualAction(style: .normal, title: "edit") {[weak self] _,_,_ in
-            if let weakSelf = self, let model = weakSelf.model, indexPath.row < model.categories.count, let coordinator = weakSelf.coordinator {
+            if let weakSelf = self, let model = weakSelf.model, indexPath.row < model.categories.count, let coordinator = weakSelf.coordinator as? CategoryListCoordinatorProtocol {
                 coordinator.showEditingCategory(category: model.categories[indexPath.row], parentCategory: model.parentCategory, presentingVC: weakSelf)
             }
         }
@@ -147,7 +149,7 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
     }
     
     @IBAction func addCategory(_ sender: UIBarButtonItem) {
-        if let coordinator = coordinator {
+        if let coordinator = coordinator as? CategoryListCoordinatorProtocol {
             let parentCategory = model?.parentCategory
             coordinator.showEditingCategory(category: nil, parentCategory: parentCategory, presentingVC: self)
         }

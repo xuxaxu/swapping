@@ -9,7 +9,7 @@ import UIKit
 
 class LogoutVC: UIViewController, CoordinatedVC {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
 
     var model: SwappingAuth!
     

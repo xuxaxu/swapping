@@ -25,6 +25,10 @@
 		C9333A2428400A5600DA52E5 /* ProductVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A2328400A5600DA52E5 /* ProductVM.swift */; };
 		C9333A262840CC1000DA52E5 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A252840CC1000DA52E5 /* UserData.swift */; };
 		C9333A282840D75500DA52E5 /* UserDataVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9333A272840D75500DA52E5 /* UserDataVM.swift */; };
+		C93F15E8288689710069F175 /* ObjectWithId.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93F15E7288689710069F175 /* ObjectWithId.swift */; };
+		C93F15EB2886A9AA0069F175 /* CoordinatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93F15EA2886A9AA0069F175 /* CoordinatorProtocol.swift */; };
+		C93F15ED2886AB330069F175 /* Storyboarded.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93F15EC2886AB330069F175 /* Storyboarded.swift */; };
+		C93F15EF2886DC610069F175 /* AlertProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93F15EE2886DC610069F175 /* AlertProtocol.swift */; };
 		C944908A2822A340007D9CBD /* imageWork.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94490892822A340007D9CBD /* imageWork.swift */; };
 		C944909228239A0D007D9CBD /* SwappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C944909128239A0D007D9CBD /* SwappingTests.swift */; };
 		C953F0B7280EE04100EDF49C /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = C953F0B6280EE04100EDF49C /* Product.swift */; };
@@ -108,6 +112,10 @@
 		C9333A2328400A5600DA52E5 /* ProductVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVM.swift; sourceTree = "<group>"; };
 		C9333A252840CC1000DA52E5 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		C9333A272840D75500DA52E5 /* UserDataVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataVM.swift; sourceTree = "<group>"; };
+		C93F15E7288689710069F175 /* ObjectWithId.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWithId.swift; sourceTree = "<group>"; };
+		C93F15EA2886A9AA0069F175 /* CoordinatorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoordinatorProtocol.swift; sourceTree = "<group>"; };
+		C93F15EC2886AB330069F175 /* Storyboarded.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboarded.swift; sourceTree = "<group>"; };
+		C93F15EE2886DC610069F175 /* AlertProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertProtocol.swift; sourceTree = "<group>"; };
 		C94490892822A340007D9CBD /* imageWork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageWork.swift; sourceTree = "<group>"; };
 		C944908F28239A0D007D9CBD /* SwappingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwappingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C944909128239A0D007D9CBD /* SwappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwappingTests.swift; sourceTree = "<group>"; };
@@ -205,7 +213,7 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		C91CF1A4281EDED400C5CFB8 /* Category */ = {
+		C91CF1A4281EDED400C5CFB8 /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
 				C994BDDB280D98CD00D4AF9F /* CatalogVC.swift */,
@@ -215,18 +223,17 @@
 				C91CF19F281BB36300C5CFB8 /* CategorySectionTableViewCell.xib */,
 				C953F0BF28118E9200EDF49C /* CategoryViewController.swift */,
 			);
-			path = Category;
+			path = UIKit;
 			sourceTree = "<group>";
 		};
-		C91CF1A5281EDF0000C5CFB8 /* Product */ = {
+		C91CF1A5281EDF0000C5CFB8 /* ProductFlow */ = {
 			isa = PBXGroup;
 			children = (
-				C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */,
-				C9A699AA28251D6400C5A37B /* ProductChooseViewController.swift */,
-				C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */,
-				C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */,
+				C93F15E5288687DB0069F175 /* Model */,
+				C92D15B528376F1F00BD172C /* ViewModel */,
+				C93F15E2288687340069F175 /* View */,
 			);
-			path = Product;
+			path = ProductFlow;
 			sourceTree = "<group>";
 		};
 		C92D15AD2836468400BD172C /* SwappingTestsDataService */ = {
@@ -237,41 +244,144 @@
 			path = SwappingTestsDataService;
 			sourceTree = "<group>";
 		};
-		C92D15B528376F1F00BD172C /* Products */ = {
+		C92D15B528376F1F00BD172C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				C9A699CE282BC6AE00C5A37B /* ProductEditVM.swift */,
 				C9333A2328400A5600DA52E5 /* ProductVM.swift */,
 				C9A699C1282A55AA00C5A37B /* ProductListVM.swift */,
 			);
-			path = Products;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		C92D15B628376F2F00BD172C /* Categories */ = {
+		C92D15B628376F2F00BD172C /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
 				C9A699C3282A92CB00C5A37B /* CategoryListVM.swift */,
 				C9A699D0282E94E400C5A37B /* CategoryVM.swift */,
 			);
-			path = Categories;
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		C930215D285B486400A173A6 /* Messages */ = {
+		C9333A292840E94200DA52E5 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C9333A272840D75500DA52E5 /* UserDataVM.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		C93F15DB288686010069F175 /* CategoriesFlow */ = {
+			isa = PBXGroup;
+			children = (
+				C92D15B628376F2F00BD172C /* ViewModel */,
+				C93F15DD288686310069F175 /* view */,
+				C93F15DC288686180069F175 /* Model */,
+			);
+			name = CategoriesFlow;
+			sourceTree = "<group>";
+		};
+		C93F15DC288686180069F175 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C9A699C7282BA8C500C5A37B /* Category.swift */,
+				C93021572851F33900A173A6 /* CategoryFilter.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		C93F15DD288686310069F175 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				C91CF1A4281EDED400C5CFB8 /* UIKit */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		C93F15DE288686420069F175 /* MessageFlow */ = {
+			isa = PBXGroup;
+			children = (
+				C930215B2859F3AD00A173A6 /* MessageService.swift */,
+				C93F15E02886865B0069F175 /* Model */,
+				C93F15DF288686550069F175 /* View */,
+			);
+			path = MessageFlow;
+			sourceTree = "<group>";
+		};
+		C93F15DF288686550069F175 /* View */ = {
 			isa = PBXGroup;
 			children = (
 				C930215E285B4BA800A173A6 /* MessageTableViewCell.swift */,
 				C930215F285B4BA800A173A6 /* MessageTableViewCell.xib */,
 			);
-			path = Messages;
+			path = View;
 			sourceTree = "<group>";
 		};
-		C9333A292840E94200DA52E5 /* Users */ = {
+		C93F15E02886865B0069F175 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C93021592859DB1400A173A6 /* Message.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C93F15E2288687340069F175 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C91CF1A6281EDF2B00C5CFB8 /* ProductViewController.swift */,
+				C9A699AA28251D6400C5A37B /* ProductChooseViewController.swift */,
+				C91CF1A2281EDDF900C5CFB8 /* ProductCollectionViewCell.swift */,
+				C91CF1A8281EE36100C5CFB8 /* EditProductViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C93F15E3288687640069F175 /* AuthFlow */ = {
 			isa = PBXGroup;
 			children = (
 				C973A124280DBCF6008BCDF2 /* SwappingAuth.swift */,
-				C9333A272840D75500DA52E5 /* UserDataVM.swift */,
+				C9333A252840CC1000DA52E5 /* UserData.swift */,
+				C9333A292840E94200DA52E5 /* ViewModel */,
+				C93F15E4288687860069F175 /* View */,
 			);
-			path = Users;
+			path = AuthFlow;
+			sourceTree = "<group>";
+		};
+		C93F15E4288687860069F175 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C953F0C32812E71000EDF49C /* StartViewController.swift */,
+				C92D15B72837C89500BD172C /* LogoutVC.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		C93F15E5288687DB0069F175 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C953F0B6280EE04100EDF49C /* Product.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C93F15E6288688680069F175 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				C953F0B82811392300EDF49C /* FirebaseNetwork.swift */,
+				C953F0C12812AEBC00EDF49C /* DataService.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		C93F15E92886A9910069F175 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				C953F0C52812E87200EDF49C /* Coordinator.swift */,
+				C93F15EC2886AB330069F175 /* Storyboarded.swift */,
+				C93F15EA2886A9AA0069F175 /* CoordinatorProtocol.swift */,
+				C93F15EE2886DC610069F175 /* AlertProtocol.swift */,
+			);
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
 		C944909028239A0D007D9CBD /* SwappingTests */ = {
@@ -286,12 +396,7 @@
 		C953F0BE28118E5600EDF49C /* view */ = {
 			isa = PBXGroup;
 			children = (
-				C930215D285B486400A173A6 /* Messages */,
-				C91CF1A5281EDF0000C5CFB8 /* Product */,
-				C91CF1A4281EDED400C5CFB8 /* Category */,
 				C994BDDD280D98CD00D4AF9F /* Main.storyboard */,
-				C953F0C32812E71000EDF49C /* StartViewController.swift */,
-				C92D15B72837C89500BD172C /* LogoutVC.swift */,
 			);
 			path = view;
 			sourceTree = "<group>";
@@ -320,16 +425,16 @@
 			isa = PBXGroup;
 			children = (
 				C994BDD6280D98CD00D4AF9F /* Swapping */,
+				C994BDD5280D98CD00D4AF9F /* DontKnow */,
 				C944909028239A0D007D9CBD /* SwappingTests */,
 				C9A699B32827F98F00C5A37B /* SwappingUITests */,
 				C92D15AD2836468400BD172C /* SwappingTestsDataService */,
-				C994BDD5280D98CD00D4AF9F /* Products */,
 				48405BF594D3399B5F6F485A /* Pods */,
 				1E84ACFCE9ABAD4BD7C71F57 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
-		C994BDD5280D98CD00D4AF9F /* Products */ = {
+		C994BDD5280D98CD00D4AF9F /* DontKnow */ = {
 			isa = PBXGroup;
 			children = (
 				C994BDD4280D98CD00D4AF9F /* Swapping.app */,
@@ -337,24 +442,26 @@
 				C9A699B22827F98F00C5A37B /* SwappingUITests.xctest */,
 				C92D15AC2836468400BD172C /* SwappingTestsDataService.xctest */,
 			);
-			name = Products;
+			name = DontKnow;
 			sourceTree = "<group>";
 		};
 		C994BDD6280D98CD00D4AF9F /* Swapping */ = {
 			isa = PBXGroup;
 			children = (
+				C93F15E6288688680069F175 /* Persistence */,
+				C93F15E3288687640069F175 /* AuthFlow */,
+				C93F15DB288686010069F175 /* CategoriesFlow */,
+				C91CF1A5281EDF0000C5CFB8 /* ProductFlow */,
+				C93F15DE288686420069F175 /* MessageFlow */,
 				C953F0BE28118E5600EDF49C /* view */,
-				C9A699C6282BA84D00C5A37B /* ViewModels */,
-				C9A699C5282BA83900C5A37B /* Models */,
+				C9A699C6282BA84D00C5A37B /* Binding */,
+				C9A699C5282BA83900C5A37B /* Model */,
 				C994BDEB280D9AD800D4AF9F /* GoogleService-Info.plist */,
 				C994BDE5280D98CE00D4AF9F /* Info.plist */,
 				C973A126280DC054008BCDF2 /* assets */,
 				C994A01C28158F7F00DD8920 /* PhotoLib */,
-				C953F0C52812E87200EDF49C /* Coordinator.swift */,
+				C93F15E92886A9910069F175 /* Coordinator */,
 				C9A699BD282A41E600C5A37B /* Container.swift */,
-				C953F0B82811392300EDF49C /* FirebaseNetwork.swift */,
-				C953F0C12812AEBC00EDF49C /* DataService.swift */,
-				C930215B2859F3AD00A173A6 /* MessageService.swift */,
 			);
 			path = Swapping;
 			sourceTree = "<group>";
@@ -368,28 +475,21 @@
 			path = SwappingUITests;
 			sourceTree = "<group>";
 		};
-		C9A699C5282BA83900C5A37B /* Models */ = {
+		C9A699C5282BA83900C5A37B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				C953F0B6280EE04100EDF49C /* Product.swift */,
-				C9333A252840CC1000DA52E5 /* UserData.swift */,
-				C9A699C7282BA8C500C5A37B /* Category.swift */,
 				C9A699C9282BA8E600C5A37B /* ObjectWithImage.swift */,
-				C93021572851F33900A173A6 /* CategoryFilter.swift */,
-				C93021592859DB1400A173A6 /* Message.swift */,
+				C93F15E7288689710069F175 /* ObjectWithId.swift */,
 			);
-			path = Models;
+			path = Model;
 			sourceTree = "<group>";
 		};
-		C9A699C6282BA84D00C5A37B /* ViewModels */ = {
+		C9A699C6282BA84D00C5A37B /* Binding */ = {
 			isa = PBXGroup;
 			children = (
-				C9333A292840E94200DA52E5 /* Users */,
-				C92D15B628376F2F00BD172C /* Categories */,
-				C92D15B528376F1F00BD172C /* Products */,
 				C9A699CB282BA9FB00C5A37B /* Bindings */,
 			);
-			path = ViewModels;
+			path = Binding;
 			sourceTree = "<group>";
 		};
 		C9A699CB282BA9FB00C5A37B /* Bindings */ = {
@@ -520,7 +620,7 @@
 				Base,
 			);
 			mainGroup = C994BDCB280D98CD00D4AF9F;
-			productRefGroup = C994BDD5280D98CD00D4AF9F /* Products */;
+			productRefGroup = C994BDD5280D98CD00D4AF9F /* DontKnow */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -772,6 +872,7 @@
 				C9A699BE282A41E600C5A37B /* Container.swift in Sources */,
 				C944908A2822A340007D9CBD /* imageWork.swift in Sources */,
 				C91CF1A7281EDF2B00C5CFB8 /* ProductViewController.swift in Sources */,
+				C93F15E8288689710069F175 /* ObjectWithId.swift in Sources */,
 				C92D15B82837C89500BD172C /* LogoutVC.swift in Sources */,
 				C953F0B92811392300EDF49C /* FirebaseNetwork.swift in Sources */,
 				C994BDDC280D98CD00D4AF9F /* CatalogVC.swift in Sources */,
@@ -779,14 +880,17 @@
 				C9302156284DE2EE00A173A6 /* RefreshPublisher.swift in Sources */,
 				C953F0C42812E71000EDF49C /* StartViewController.swift in Sources */,
 				C9A699C4282A92CB00C5A37B /* CategoryListVM.swift in Sources */,
+				C93F15ED2886AB330069F175 /* Storyboarded.swift in Sources */,
 				C9A699CA282BA8E600C5A37B /* ObjectWithImage.swift in Sources */,
 				C9A699D1282E94E400C5A37B /* CategoryVM.swift in Sources */,
 				C91CF1A0281BB36300C5CFB8 /* CategorySectionTableViewCell.swift in Sources */,
 				C953F0C62812E87200EDF49C /* Coordinator.swift in Sources */,
 				C93021582851F33900A173A6 /* CategoryFilter.swift in Sources */,
 				C9333A2428400A5600DA52E5 /* ProductVM.swift in Sources */,
+				C93F15EB2886A9AA0069F175 /* CoordinatorProtocol.swift in Sources */,
 				C9333A282840D75500DA52E5 /* UserDataVM.swift in Sources */,
 				C930215C2859F3AD00A173A6 /* MessageService.swift in Sources */,
+				C93F15EF2886DC610069F175 /* AlertProtocol.swift in Sources */,
 				C994A01E28167EF700DD8920 /* PhotoPicker.swift in Sources */,
 				C953F0C028118E9200EDF49C /* CategoryViewController.swift in Sources */,
 				C953F0BC28115AE100EDF49C /* CategoryTableViewCell.swift in Sources */,

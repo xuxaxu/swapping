@@ -8,11 +8,11 @@
 import UIKit
 import FirebaseAuthUI
 
-class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC, UITextFieldDelegate {
+class StartViewController: UIViewController, FUIAuthDelegate, CoordinatedVC, UITextFieldDelegate, Storyboarded {
     
     var authStarted = false
     
-    var coordinator : Coordinator?
+    var coordinator : CoordinatorProtocol?
     
     var model : SwappingAuth!
     

@@ -13,9 +13,6 @@ protocol ObjectWithImage : Decodable, Equatable, ObjectWithId {
     var image : UIImage? {get set}
     var imgUrl: URL? {get set}
     var name: String? {get set}
-    var id: String? {get set}
-    
-    func getRef() -> String
     
 }
 

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Firebase
 
 class Product : DataObject {
     
@@ -14,16 +13,6 @@ class Product : DataObject {
     var features : Dictionary<Feature, Any>?
     var owner : String?
     var productDescription: String?
-    
-    convenience init(name : String, category : String, image : UIImage?, features : Dictionary<Feature, Any>?, description : String?) {
-        self.init()
-        
-            self.name = name
-            self.category = category
-            self.image = image
-            self.features = features
-            self.productDescription = description
-    }
     
     enum CodingKeys: String, CodingKey {
         case name

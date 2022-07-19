@@ -86,6 +86,7 @@ class SwappingAuth: NSObject, FUIAuthDelegate, ISingleton {
               self?.errorMessage.value = error?.localizedDescription ?? "error signing in"
               return
           }
+            strongSelf.authenticated.value = true
             if save {
                 strongSelf.saveCredentials(login: login, password: password)
             }

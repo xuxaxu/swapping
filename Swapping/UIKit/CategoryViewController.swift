@@ -10,7 +10,7 @@ import PhotosUI
 
 class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextFieldDelegate, CoordinatedVC {
     
-    var coordinator: Coordinator?
+    var coordinator: CoordinatorProtocol?
     
     var model: CategoryVM!
     

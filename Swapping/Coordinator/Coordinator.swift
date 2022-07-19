@@ -8,21 +8,24 @@
 import Foundation
 import UIKit
 
-final class Coordinator: IPerRequest {
+final class Coordinator: IPerRequest, CoordinatorProtocol, AlertProtocol {
     
-    private var container: IContainer!
+    var childCoordinators: [CoordinatorProtocol] = []
+    
+    var navigationController: UINavigationController
+    
+    internal var container: IContainer!
     
     required init(container: IContainer, args: ()) {
         self.container = container
-        
+        navigationController = UINavigationController()
     }
     
-    func start()->UIViewController? {
-        if let vc = getVC(id: "startVCId") as? StartViewController {
-            vc.model = container.resolve(args: ())
-            return vc
-        }
-        return nil
+    func start() -> UIViewController {
+        let vc = StartViewController.instantiate()
+        vc.coordinator = self
+        vc.model = container.resolve(args: ())
+        return vc
     }
     
     func getVC(id: String) -> UIViewController? {
@@ -55,15 +58,6 @@ final class Coordinator: IPerRequest {
         } else {
             vc.dismiss(animated: true)
         }
-    }
-    
-    func showAlert(message: String, in vc: UIViewController) {
-            
-        let alert = UIAlertController(title: message, message: "error.", preferredStyle: .alert)
-
-        alert.addAction(UIAlertAction(title: "Ок", style: .default, handler: nil))
-       
-        vc.present(alert, animated: true)
     }
     
     func showMainTabBar(in vc: UIViewController) {
@@ -145,7 +139,4 @@ final class Coordinator: IPerRequest {
     
 }
 
-protocol CoordinatedVC : UIViewController {
-    var coordinator: Coordinator? {get set}
-}
 
