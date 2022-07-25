@@ -8,6 +8,7 @@
 import Foundation
 import Firebase
 
+/* some class for saving user */
 class UserData : DataObject {
     
     convenience init(uid: String, name : String, image : UIImage?) {
