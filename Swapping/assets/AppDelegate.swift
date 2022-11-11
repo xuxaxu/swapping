@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Swapping
-//
-//  Created by Ксения Каштанкина on 18.04.22.
-//
-
 import UIKit
 import Firebase
 

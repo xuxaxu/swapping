@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CoordinatedVC {
+class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, CoordinatedVC, Storyboarded {
     
     var coordinator: CoordinatorProtocol?
     
@@ -156,7 +156,10 @@ class CatalogVC: UIViewController, UITableViewDataSource, UITableViewDelegate, C
     }
     
     @IBAction func logOutAction(_ sender: UIBarButtonItem) {
-        coordinator?.showLogOut(in: self)
+        guard let coordinator = coordinator as? MainCoordinatorProtocol else {
+            return
+        }
+        coordinator.showLogOut(in: self)
     }
     
     

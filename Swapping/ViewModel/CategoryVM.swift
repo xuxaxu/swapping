@@ -51,7 +51,7 @@ class CategoryVM : IPerRequest {
         } else {
                 category!.image = image
         }
-        dataService.editCategory(category: category!)
+        dataService.editCategory(category: category!) {}
 
         if let subscriber = subscriber {
             publisher.subscribeforUpdates(some: subscriber)

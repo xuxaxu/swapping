@@ -8,7 +8,7 @@
 import UIKit
 import PhotosUI
 
-class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextFieldDelegate, CoordinatedVC {
+class CategoryViewController: UIViewController, PhotoPickerDelegate, UITextFieldDelegate, CoordinatedVC, Storyboarded {
     
     var coordinator: CoordinatorProtocol?
     

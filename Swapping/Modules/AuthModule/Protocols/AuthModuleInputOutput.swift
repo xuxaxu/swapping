@@ -1,0 +1,3 @@
+protocol AuthModuleInput {}
+
+protocol AuthModuleOutput {}

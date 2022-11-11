@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         self.window = UIWindow(windowScene: windowScene)
         
-        let container = Container()
+        let appState = AppState()
+        let container = Container(appState: appState)
         
         let coordinator = Coordinator(container: container, args: ())
         

@@ -1,0 +1,3 @@
+protocol LogOutViewOutput {
+    func logOut()
+}
